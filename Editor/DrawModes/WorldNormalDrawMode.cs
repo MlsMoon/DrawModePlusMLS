@@ -5,7 +5,9 @@ namespace DrawModePlusMLS.Editor
         public override void OnInitialize()
         {
             DrawModeName = "WorldNormal";
-            ShaderName = "DrawModePlus/WorldNormal";
+            FullScreenShaderName = "DrawModePlus/WorldNormal";
+            usePostProcessingShader = true;
+            replaceSceneViewShader = false;
 
             base.OnInitialize();
         }

@@ -6,10 +6,14 @@ namespace DrawModePlusMLS.Editor
     public class CustomDrawModeBase
     {
         public string GetDrawModeName() => DrawModeName;
-        public string GetShaderName() => ShaderName;
+        public string GetShaderName() => FullScreenShaderName;
 
         protected string DrawModeName = "Default";
-        protected string ShaderName = "DrawModePlus/DefaultFallback";
+        protected string FullScreenShaderName = "DrawModePlus/DefaultFallback";
+        protected string SceneViewReplaceShaderName = "DrawModePlus/DefaultFallback";
+
+        protected bool replaceSceneViewShader = false;
+        protected bool usePostProcessingShader = false;
 
         private Material material;
         private RenderTexture temp;
@@ -23,6 +27,9 @@ namespace DrawModePlusMLS.Editor
 
         public virtual void OnSceneGUIDraw(SceneView sceneView)
         {
+            if (!usePostProcessingShader)
+                return;
+
             var cam = sceneView.camera;
             var src = cam.targetTexture;
             temp = RenderTexture.GetTemporary(src.descriptor);
@@ -48,12 +55,24 @@ namespace DrawModePlusMLS.Editor
             RenderTexture.ReleaseTemporary(temp);
         }
 
+        protected virtual void OnSceneViewSelected()
+        {
+            SceneView currentSceneView = SceneView.lastActiveSceneView;
+            currentSceneView.SetSceneViewShaderReplace(null, null);
+        }
+
+        protected virtual void OnSceneViewUnselected()
+        {
+            SceneView currentSceneView = SceneView.lastActiveSceneView;
+            currentSceneView.SetSceneViewShaderReplace(null, null);
+        }
+
         private void InitializeMaterial()
         {
             Shader shader = Shader.Find(GetShaderName());
             if (shader == null)
             {
-                Debug.LogError("Shader not found: " + ShaderName);
+                Debug.LogError("Shader not found: " + FullScreenShaderName);
             }
 
             material = new Material(shader);

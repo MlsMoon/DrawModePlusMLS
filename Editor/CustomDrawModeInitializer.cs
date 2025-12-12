@@ -29,7 +29,7 @@ namespace DrawModePlusMLS.Editor
             }
         }
 
-        public static void OnDrawModeChanged(SceneView.CameraMode mode)
+        private static void OnDrawModeChanged(SceneView.CameraMode mode)
         {
             //Fill this later
             string sceneViewModeName = mode.name;
