@@ -18,10 +18,12 @@ namespace DrawModePlusMLS.Editor
             EditorApplication.update += OnUpdateEditor;
 
             // 注册DrawMode
-            Depth10DrawMode depth10DrawMode = new Depth10DrawMode();
-            drawModes.Add(depth10DrawMode);
+            Depth50DrawMode depth50DrawMode = new Depth50DrawMode();
+            drawModes.Add(depth50DrawMode);
             WorldNormalDrawMode worldNormalDrawMode = new WorldNormalDrawMode();
             drawModes.Add(worldNormalDrawMode);
+            UV0Checker uv0Checker = new UV0Checker();
+            drawModes.Add(uv0Checker);
 
             foreach (var drawMode in drawModes)
             {
@@ -42,6 +44,7 @@ namespace DrawModePlusMLS.Editor
                 {
                     isSelectedCustomMode = true;
                     SceneView.duringSceneGui += drawModes[i].OnSceneGUIDraw;
+                    drawModes[i].OnSceneViewSelected();
                 }
             }
 
@@ -77,6 +80,7 @@ namespace DrawModePlusMLS.Editor
             {
                 CustomDrawModeBase drawModeBase = drawModes[i];
                 SceneView.duringSceneGui -= drawModeBase.OnSceneGUIDraw;
+                drawModeBase.OnSceneViewUnselected();
             }
         }
     }

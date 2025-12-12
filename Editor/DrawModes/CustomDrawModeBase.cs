@@ -15,7 +15,10 @@ namespace DrawModePlusMLS.Editor
         protected bool replaceSceneViewShader = false;
         protected bool usePostProcessingShader = false;
 
-        private Material material;
+        private Material postProcessingMaterial;
+        private Material sceneViewReplaceMaterial;
+        private Shader sceneViewReplaceShader;
+
         private RenderTexture temp;
 
         public virtual void OnInitialize()
@@ -46,22 +49,22 @@ namespace DrawModePlusMLS.Editor
                 return;
             }
 
-            if (material == null)
+            if (postProcessingMaterial == null)
                 InitializeMaterial();
 
-            Graphics.Blit(src, temp, material);
+            Graphics.Blit(src, temp, postProcessingMaterial);
             Graphics.Blit(temp, src);
 
             RenderTexture.ReleaseTemporary(temp);
         }
 
-        protected virtual void OnSceneViewSelected()
+        public virtual void OnSceneViewSelected()
         {
             SceneView currentSceneView = SceneView.lastActiveSceneView;
-            currentSceneView.SetSceneViewShaderReplace(null, null);
+            currentSceneView.SetSceneViewShaderReplace(sceneViewReplaceShader,null);
         }
 
-        protected virtual void OnSceneViewUnselected()
+        public virtual void OnSceneViewUnselected()
         {
             SceneView currentSceneView = SceneView.lastActiveSceneView;
             currentSceneView.SetSceneViewShaderReplace(null, null);
@@ -69,13 +72,28 @@ namespace DrawModePlusMLS.Editor
 
         private void InitializeMaterial()
         {
-            Shader shader = Shader.Find(GetShaderName());
-            if (shader == null)
+            if (usePostProcessingShader)
             {
-                Debug.LogError("Shader not found: " + FullScreenShaderName);
+                Shader shaderFullScreen = Shader.Find(GetShaderName());
+                if (shaderFullScreen == null)
+                {
+                    Debug.LogError("Shader not found: " + FullScreenShaderName);
+                    return;
+                }
+                postProcessingMaterial = new Material(shaderFullScreen);
             }
 
-            material = new Material(shader);
+
+            if (replaceSceneViewShader)
+            {
+                sceneViewReplaceShader = Shader.Find(SceneViewReplaceShaderName);
+                if (sceneViewReplaceShader == null)
+                {
+                    Debug.LogError("Shader not found: " + SceneViewReplaceShaderName);
+                    return;
+                }
+                sceneViewReplaceMaterial = new Material(sceneViewReplaceShader);
+            }
         }
     }
 }
