@@ -20,6 +20,8 @@ namespace DrawModePlusMLS.Editor
             // 注册DrawMode
             Depth10DrawMode depth10DrawMode = new Depth10DrawMode();
             drawModes.Add(depth10DrawMode);
+            WorldNormalDrawMode worldNormalDrawMode = new WorldNormalDrawMode();
+            drawModes.Add(worldNormalDrawMode);
 
             foreach (var drawMode in drawModes)
             {
