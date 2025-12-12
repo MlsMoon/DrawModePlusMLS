@@ -18,7 +18,38 @@ namespace DrawModePlusMLS.Editor
         {
             // 在菜单中添加自定义绘制模式
             SceneView.AddCameraMode(GetDrawModeName(), "DrawModePlusMLS");
+            InitializeMaterial();
+        }
 
+        public virtual void OnSceneGUIDraw(SceneView sceneView)
+        {
+            var cam = sceneView.camera;
+            var src = cam.targetTexture;
+            temp = RenderTexture.GetTemporary(src.descriptor);
+
+            if (src == null)
+            {
+                Debug.Log("OnSceneGUIDraw : RT src is null");
+                return;
+            }
+
+            if (temp == null)
+            {
+                Debug.Log("OnSceneGUIDraw : RT temp is null");
+                return;
+            }
+
+            if (material == null)
+                InitializeMaterial();
+
+            Graphics.Blit(src, temp, material);
+            Graphics.Blit(temp, src);
+
+            RenderTexture.ReleaseTemporary(temp);
+        }
+
+        private void InitializeMaterial()
+        {
             Shader shader = Shader.Find(GetShaderName());
             if (shader == null)
             {
@@ -26,20 +57,6 @@ namespace DrawModePlusMLS.Editor
             }
 
             material = new Material(shader);
-        }
-
-        public virtual void OnSceneGUIDraw(SceneView sceneView)
-        {
-            var cam = sceneView.camera;
-            var src = cam.targetTexture;
-            if (src == null)
-                return;
-
-            temp = RenderTexture.GetTemporary(src.descriptor);
-            Graphics.Blit(src, temp, material);
-            Graphics.Blit(temp, src);
-
-            RenderTexture.ReleaseTemporary(temp);
         }
     }
 }
