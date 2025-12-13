@@ -23,7 +23,7 @@ namespace DrawModePlusMLS.Editor
             if (sceneViewReplaceShader == null)
                 InitializeMaterial();
 
-            Texture2D texture = ResourceFinder.LoadTexture("ColorUV.png");
+            Texture2D texture = ResourceFinder.LoadTexture("Common/ColorUV.png");
             if (texture == null)
             {
                 Debug.LogWarning("UV0Checker : texture is null");

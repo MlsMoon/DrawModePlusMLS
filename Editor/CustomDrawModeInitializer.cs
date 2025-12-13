@@ -22,8 +22,8 @@ namespace DrawModePlusMLS.Editor
             // 注册DrawMode
             Depth50DrawMode depth50DrawMode = new Depth50DrawMode();
             drawModes.Add(depth50DrawMode);
-            ObjectWorldNormalDrawMode objectWorldNormalDrawMode = new ObjectWorldNormalDrawMode();
-            drawModes.Add(objectWorldNormalDrawMode);
+            WorldNormalDrawMode worldNormalDrawMode = new WorldNormalDrawMode();
+            drawModes.Add(worldNormalDrawMode);
             UV0Checker uv0Checker = new UV0Checker();
             drawModes.Add(uv0Checker);
 

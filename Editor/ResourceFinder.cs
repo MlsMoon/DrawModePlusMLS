@@ -27,14 +27,13 @@ namespace DrawModePlusMLS.Editor
             return path.Substring(0, index + rootFolder.Length);
         }
 
-
         private static string GetScriptPath([CallerFilePath] string path = "") => path;
 
         public static Texture2D LoadTexture(string name)
         {
             string path = GetTexturePath()+"\\"+name;
             path = path.Replace("\\", "/");
-            Debug.Log(path);
+            // Debug.Log(path);
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
     }
