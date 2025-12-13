@@ -1,11 +1,11 @@
 ﻿namespace DrawModePlusMLS.Editor
 {
-    public class Depth50DrawMode : CustomDrawModeBase
+    public class DepthDrawMode : CustomDrawModeBase
     {
         public override void OnInitialize()
         {
-            DrawModeName = "Depth(50m)";
-            FullScreenShaderName = "DrawModePlus/DepthView50";
+            DrawModeName = "Depth";
+            FullScreenShaderName = "DrawModePlus/DepthView";
             usePostProcessingShader = true;
             replaceSceneViewShader = false;
 

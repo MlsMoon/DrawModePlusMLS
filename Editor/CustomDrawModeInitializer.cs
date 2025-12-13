@@ -20,12 +20,14 @@ namespace DrawModePlusMLS.Editor
             EditorApplication.update += OnUpdateEditor;
 
             // 注册DrawMode
-            Depth50DrawMode depth50DrawMode = new Depth50DrawMode();
-            drawModes.Add(depth50DrawMode);
+            DepthDrawMode depthDrawMode = new DepthDrawMode();
+            drawModes.Add(depthDrawMode);
             WorldNormalDrawMode worldNormalDrawMode = new WorldNormalDrawMode();
             drawModes.Add(worldNormalDrawMode);
             UV0Checker uv0Checker = new UV0Checker();
             drawModes.Add(uv0Checker);
+            // StencilDrawMode stencilDrawMode = new StencilDrawMode();
+            // drawModes.Add(stencilDrawMode);
 
             foreach (var drawMode in drawModes)
             {
@@ -36,10 +38,10 @@ namespace DrawModePlusMLS.Editor
         private static void OnDrawModeChanged(SceneView.CameraMode mode)
         {
             ResetDebugDraw();
-            
+
             //Fill this later
             string sceneViewModeName = mode.name;
-            
+
             for (int i = 0; i < drawModes.Count; i++)
             {
                 string currentDrawModeName = drawModes[i].GetDrawModeName();
