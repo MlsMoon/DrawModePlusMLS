@@ -15,9 +15,9 @@ namespace DrawModePlusMLS.Editor
         protected bool replaceSceneViewShader = false;
         protected bool usePostProcessingShader = false;
 
-        private Material postProcessingMaterial;
-        private Material sceneViewReplaceMaterial;
-        private Shader sceneViewReplaceShader;
+        protected Material postProcessingMaterial;
+        protected Material sceneViewReplaceMaterial;
+        protected Shader sceneViewReplaceShader;
 
         private RenderTexture temp;
 
@@ -70,7 +70,7 @@ namespace DrawModePlusMLS.Editor
             currentSceneView.SetSceneViewShaderReplace(null, null);
         }
 
-        private void InitializeMaterial()
+        protected void InitializeMaterial()
         {
             if (usePostProcessingShader)
             {
@@ -82,7 +82,6 @@ namespace DrawModePlusMLS.Editor
                 }
                 postProcessingMaterial = new Material(shaderFullScreen);
             }
-
 
             if (replaceSceneViewShader)
             {

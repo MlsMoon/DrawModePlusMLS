@@ -12,6 +12,8 @@ namespace DrawModePlusMLS.Editor
         private static SceneView currentSceneView;
         private static List<CustomDrawModeBase> drawModes = new List<CustomDrawModeBase>();
 
+        private static string CurrentDrawName;
+
         static CustomDrawModeInitializer()
         {
             Debug.Log("DrawModePlusMLS: Initialize");
@@ -20,8 +22,8 @@ namespace DrawModePlusMLS.Editor
             // 注册DrawMode
             Depth50DrawMode depth50DrawMode = new Depth50DrawMode();
             drawModes.Add(depth50DrawMode);
-            WorldNormalDrawMode worldNormalDrawMode = new WorldNormalDrawMode();
-            drawModes.Add(worldNormalDrawMode);
+            ObjectWorldNormalDrawMode objectWorldNormalDrawMode = new ObjectWorldNormalDrawMode();
+            drawModes.Add(objectWorldNormalDrawMode);
             UV0Checker uv0Checker = new UV0Checker();
             drawModes.Add(uv0Checker);
 
@@ -33,24 +35,19 @@ namespace DrawModePlusMLS.Editor
 
         private static void OnDrawModeChanged(SceneView.CameraMode mode)
         {
+            ResetDebugDraw();
+            
             //Fill this later
             string sceneViewModeName = mode.name;
-
-            bool isSelectedCustomMode = false;
+            
             for (int i = 0; i < drawModes.Count; i++)
             {
                 string currentDrawModeName = drawModes[i].GetDrawModeName();
                 if (sceneViewModeName == currentDrawModeName)
                 {
-                    isSelectedCustomMode = true;
                     SceneView.duringSceneGui += drawModes[i].OnSceneGUIDraw;
                     drawModes[i].OnSceneViewSelected();
                 }
-            }
-
-            if (!isSelectedCustomMode)
-            {
-                ResetDebugDraw();
             }
         }
 

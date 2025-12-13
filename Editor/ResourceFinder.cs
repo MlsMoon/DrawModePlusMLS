@@ -33,6 +33,8 @@ namespace DrawModePlusMLS.Editor
         public static Texture2D LoadTexture(string name)
         {
             string path = GetTexturePath()+"\\"+name;
+            path = path.Replace("\\", "/");
+            Debug.Log(path);
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
     }

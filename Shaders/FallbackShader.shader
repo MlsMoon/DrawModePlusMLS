@@ -50,7 +50,7 @@ Shader "DrawModePlus/DefaultFallback"
                 fixed4 col = tex2D(_MainTex, i.uv);
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
-                return float4(0.5,0.5,0,1);
+                return float4(0.8,0.2,0.5,1);
                 return col;
             }
             ENDCG
