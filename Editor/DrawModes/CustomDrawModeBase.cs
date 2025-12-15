@@ -78,7 +78,7 @@ namespace DrawModePlusMLS.Editor
                 Shader shaderFullScreen = Shader.Find(GetShaderName());
                 if (shaderFullScreen == null)
                 {
-                    Debug.LogError("Shader not found: " + FullScreenShaderName);
+                    Debug.LogWarning("Shader not found: " + FullScreenShaderName);
                     return;
                 }
                 postProcessingMaterial = new Material(shaderFullScreen);
@@ -89,7 +89,7 @@ namespace DrawModePlusMLS.Editor
                 sceneViewReplaceShader = Shader.Find(SceneViewReplaceShaderName);
                 if (sceneViewReplaceShader == null)
                 {
-                    Debug.LogError("Shader not found: " + SceneViewReplaceShaderName);
+                    Debug.LogWarning("Shader not found: " + SceneViewReplaceShaderName);
                     return;
                 }
                 sceneViewReplaceMaterial = new Material(sceneViewReplaceShader);
