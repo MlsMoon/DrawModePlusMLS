@@ -1,5 +1,7 @@
 # DrawModePlusMLS
-https://github.com/MlsMoon/UnityGameDevToolkit
+github:
+
+https://github.com/MlsMoon/DrawModePlusMLS
 
 UnityDrawMode拓展插件
 
@@ -10,4 +12,7 @@ UnityDrawMode拓展插件
 
 # 拓展的SceneView视图
 ## Depth视图
-![Depth](./Images/DepthView.gif)
+<figure>
+  <img src="./Images/DepthView.gif"/>
+  <figcaption>开启Depth视图</figcaption>
+</figure>
