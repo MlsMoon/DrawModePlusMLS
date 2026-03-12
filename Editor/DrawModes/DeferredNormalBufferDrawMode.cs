@@ -1,11 +1,11 @@
 namespace DrawModePlusMLS.Editor
 {
-    public class WorldNormalDrawMode : CustomDrawModeBase
+    public class DeferredNormalBufferDrawMode : CustomDrawModeBase
     {
         public override void OnInitialize()
         {
-            DrawModeName = "WorldNormal(Forward)";
-            FullScreenShaderName = "DrawModePlus/WorldNormal";
+            DrawModeName = "WorldNormal(Deferred)";
+            FullScreenShaderName = "DrawModePlus/DeferredNormalBuffer";
             usePostProcessingShader = true;
             replaceSceneViewShader = false;
 
