@@ -5,9 +5,7 @@
         public override void OnInitialize()
         {
             DrawModeName = "Depth";
-            FullScreenShaderName = "DrawModePlus/DepthView";
-            usePostProcessingShader = true;
-            replaceSceneViewShader = false;
+            Mode = global::DrawModePlusMLS.DrawModePlusMode.Depth;
 
             base.OnInitialize();
         }

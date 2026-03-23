@@ -5,9 +5,7 @@ namespace DrawModePlusMLS.Editor
         public override void OnInitialize()
         {
             DrawModeName = "WorldNormal(Deferred)";
-            FullScreenShaderName = "DrawModePlus/DeferredNormalBuffer";
-            usePostProcessingShader = true;
-            replaceSceneViewShader = false;
+            Mode = global::DrawModePlusMLS.DrawModePlusMode.WorldNormalDeferred;
 
             base.OnInitialize();
         }
