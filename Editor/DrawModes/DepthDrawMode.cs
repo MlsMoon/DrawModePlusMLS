@@ -4,7 +4,6 @@
     {
         public override void OnInitialize()
         {
-            DrawModeName = "Depth";
             Mode = global::DrawModePlusMLS.DrawModePlusMode.Depth;
 
             base.OnInitialize();

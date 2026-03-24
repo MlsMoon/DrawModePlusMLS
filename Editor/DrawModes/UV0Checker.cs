@@ -4,7 +4,6 @@ namespace DrawModePlusMLS.Editor
     {
         public override void OnInitialize()
         {
-            DrawModeName = "UV0";
             Mode = global::DrawModePlusMLS.DrawModePlusMode.UV0;
 
             base.OnInitialize();

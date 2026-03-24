@@ -33,6 +33,8 @@ namespace DrawModePlusMLS.Editor
             drawModes.Add(worldNormalDrawMode);
             DeferredNormalBufferDrawMode deferredNormalBufferDrawMode = new DeferredNormalBufferDrawMode();
             drawModes.Add(deferredNormalBufferDrawMode);
+            BaseColorDeferredDrawMode baseColorDeferredDrawMode = new BaseColorDeferredDrawMode();
+            drawModes.Add(baseColorDeferredDrawMode);
             DeferredAmbientOcclusionDrawMode deferredAmbientOcclusionDrawMode = new DeferredAmbientOcclusionDrawMode();
             drawModes.Add(deferredAmbientOcclusionDrawMode);
             UV0Checker uv0Checker = new UV0Checker();
@@ -49,14 +51,15 @@ namespace DrawModePlusMLS.Editor
         private static void OnDrawModeChanged(SceneView.CameraMode mode)
         {
             ResetDebugDraw();
-            string sceneViewModeName = mode.name;
+            if (!DrawModePlusModeRegistry.TryGetMode(mode, out var selectedMode))
+                return;
 
             for (int i = 0; i < drawModes.Count; i++)
             {
-                string currentDrawModeName = drawModes[i].GetDrawModeName();
-                if (sceneViewModeName == currentDrawModeName)
+                if (drawModes[i].DrawMode == selectedMode)
                 {
                     drawModes[i].OnSceneViewSelected();
+                    break;
                 }
             }
         }
@@ -87,88 +90,29 @@ namespace DrawModePlusMLS.Editor
                 {
                     currentSceneView = SceneView.lastActiveSceneView;
                     currentSceneView.onCameraModeChanged += OnDrawModeChanged;
+                    UpdateDrawModeIsForwardFlag();
                 }
             }
+
+            UpdateDrawModeIsForwardFlag();
         }
 
         private static void UpdateDrawModeIsForwardFlag()
         {
-            int isForward = 1;
-
-            var rpAsset = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
-            if (rpAsset == null)
-            {
-                Shader.SetGlobalInt(DrawModeIsForwardId, isForward);
-                return;
-            }
-
-            try
-            {
-                var rpSerializedObject = new SerializedObject(rpAsset);
-                SerializedProperty rendererDataListProp = rpSerializedObject.FindProperty("m_RendererDataList");
-                SerializedProperty singleRendererDataProp = null;
-
-                ScriptableRendererData rendererData = null;
-
-                if (rendererDataListProp != null && rendererDataListProp.isArray && rendererDataListProp.arraySize > 0)
-                {
-                    for (int i = 0; i < rendererDataListProp.arraySize; i++)
-                    {
-                        var element = rendererDataListProp.GetArrayElementAtIndex(i);
-                        var obj = element.objectReferenceValue as ScriptableRendererData;
-                        if (obj != null)
-                        {
-                            rendererData = obj;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    singleRendererDataProp = rpSerializedObject.FindProperty("m_RendererData");
-                    if (singleRendererDataProp != null)
-                    {
-                        rendererData = singleRendererDataProp.objectReferenceValue as ScriptableRendererData;
-                    }
-                }
-
-                if (rendererData != null && rendererData.GetType().Name.Contains("UniversalRendererData"))
-                {
-                    var rendererSO = new SerializedObject(rendererData);
-                    var renderingModeProp = rendererSO.FindProperty("m_RenderingPath") ?? rendererSO.FindProperty("m_RenderingMode");
-
-                    if (renderingModeProp != null)
-                    {
-                        int mode = renderingModeProp.intValue;
-                        isForward = mode == 1 ? 0 : 1;
-                    }
-                    else
-                    {
-                        Debug.LogWarning("DrawModePlusMLS: Could not find URP rendering mode property, fallback to Forward.");
-                    }
-                }
-                else if (rendererData != null)
-                {
-                    Debug.LogWarning($"DrawModePlusMLS: Unknown renderer data type {rendererData.GetType().Name}, fallback to Forward.");
-                }
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogWarning($"DrawModePlusMLS: Failed to detect URP Rendering Path, fallback to Forward. {e.Message}");
-            }
-
+            var referenceCamera = GetReferenceCamera();
+            int isForward = DrawModePlusRenderPipelineBridge.IsDeferred(referenceCamera) ? 0 : 1;
             Shader.SetGlobalInt(DrawModeIsForwardId, isForward);
         }
 
         private static void EnsureRendererFeaturesInjected()
         {
-            var rpAsset = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+            var rpAsset = DrawModePlusRenderPipelineBridge.GetCurrentRenderPipelineAsset();
             if (rpAsset == null)
                 return;
 
             try
             {
-                foreach (var rendererData in EnumerateRendererData(rpAsset))
+                foreach (var rendererData in DrawModePlusRenderPipelineBridge.EnumerateRendererData(rpAsset))
                 {
                     EnsureRendererFeatureInjected(rendererData);
                 }
@@ -177,30 +121,6 @@ namespace DrawModePlusMLS.Editor
             {
                 Debug.LogWarning($"DrawModePlusMLS: Failed to inject renderer feature. {e.Message}");
             }
-        }
-
-        private static IEnumerable<ScriptableRendererData> EnumerateRendererData(UniversalRenderPipelineAsset rpAsset)
-        {
-            var rpSerializedObject = new SerializedObject(rpAsset);
-            var rendererDataListProp = rpSerializedObject.FindProperty("m_RendererDataList");
-
-            if (rendererDataListProp != null && rendererDataListProp.isArray && rendererDataListProp.arraySize > 0)
-            {
-                for (int i = 0; i < rendererDataListProp.arraySize; i++)
-                {
-                    var element = rendererDataListProp.GetArrayElementAtIndex(i);
-                    var rendererData = element.objectReferenceValue as ScriptableRendererData;
-                    if (rendererData != null)
-                        yield return rendererData;
-                }
-
-                yield break;
-            }
-
-            var singleRendererDataProp = rpSerializedObject.FindProperty("m_RendererData");
-            var singleRendererData = singleRendererDataProp?.objectReferenceValue as ScriptableRendererData;
-            if (singleRendererData != null)
-                yield return singleRendererData;
         }
 
         private static void EnsureRendererFeatureInjected(ScriptableRendererData rendererData)
@@ -255,6 +175,24 @@ namespace DrawModePlusMLS.Editor
                 CustomDrawModeBase drawModeBase = drawModes[i];
                 drawModeBase.OnSceneViewUnselected();
             }
+        }
+
+        private static Camera GetReferenceCamera()
+        {
+            if (Selection.activeGameObject != null && Selection.activeGameObject.TryGetComponent(out Camera selectedCamera))
+                return selectedCamera;
+
+            if (Camera.main != null)
+                return Camera.main;
+
+            var cameras = Object.FindObjectsOfType<Camera>();
+            for (int i = 0; i < cameras.Length; i++)
+            {
+                if (cameras[i] != null && cameras[i].cameraType == CameraType.Game)
+                    return cameras[i];
+            }
+
+            return SceneView.lastActiveSceneView != null ? SceneView.lastActiveSceneView.camera : null;
         }
     }
 }

@@ -5,7 +5,6 @@ namespace DrawModePlusMLS.Editor
     {
         public override void OnInitialize()
         {
-            DrawModeName = "Stencil";
             Mode = global::DrawModePlusMLS.DrawModePlusMode.Stencil;
 
             base.OnInitialize();

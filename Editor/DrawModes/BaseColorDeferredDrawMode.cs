@@ -2,14 +2,13 @@ using UnityEngine;
 
 namespace DrawModePlusMLS.Editor
 {
-    public class DeferredAmbientOcclusionDrawMode : CustomDrawModeBase
+    public class BaseColorDeferredDrawMode : CustomDrawModeBase
     {
         private static readonly int DrawModeIsForwardId = Shader.PropertyToID("_DrawModeIsForward");
 
         public override void OnInitialize()
         {
-            Mode = global::DrawModePlusMLS.DrawModePlusMode.MaterialAO;
-
+            Mode = global::DrawModePlusMLS.DrawModePlusMode.BaseColorDeferred;
             base.OnInitialize();
         }
 
@@ -18,7 +17,7 @@ namespace DrawModePlusMLS.Editor
             base.OnSceneViewSelected();
 
             if (Shader.GetGlobalInt(DrawModeIsForwardId) != 0)
-                Debug.LogWarning("DrawModePlusMLS: MaterialAO only works with URP Deferred rendering.");
+                Debug.LogWarning("DrawModePlusMLS: BaseColor(Deferred) only works with URP Deferred rendering.");
         }
     }
 }

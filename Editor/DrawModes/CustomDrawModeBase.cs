@@ -5,6 +5,7 @@ namespace DrawModePlusMLS.Editor
 {
     public class CustomDrawModeBase
     {
+        public DrawModePlusMode DrawMode => Mode;
         public string GetDrawModeName() => DrawModeName;
 
         protected string DrawModeName = "Default";
@@ -12,7 +13,8 @@ namespace DrawModePlusMLS.Editor
 
         public virtual void OnInitialize()
         {
-            SceneView.AddCameraMode(GetDrawModeName(), "DrawModePlusMLS");
+            DrawModeName = DrawModePlusModeRegistry.GetDisplayName(Mode);
+            DrawModePlusModeRegistry.RegisterSceneViewMode(Mode);
         }
 
         public virtual void OnSceneGUIDraw(SceneView sceneView) { }

@@ -4,7 +4,6 @@ namespace DrawModePlusMLS.Editor
     {
         public override void OnInitialize()
         {
-            DrawModeName = "WorldNormal(Deferred)";
             Mode = global::DrawModePlusMLS.DrawModePlusMode.WorldNormalDeferred;
 
             base.OnInitialize();

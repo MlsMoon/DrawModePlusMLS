@@ -4,7 +4,6 @@ namespace DrawModePlusMLS.Editor
     {
         public override void OnInitialize()
         {
-            DrawModeName = "WorldNormal(Forward)";
             Mode = global::DrawModePlusMLS.DrawModePlusMode.WorldNormalForward;
 
             base.OnInitialize();

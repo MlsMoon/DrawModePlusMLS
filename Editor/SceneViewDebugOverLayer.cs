@@ -10,7 +10,6 @@ namespace DrawModePlusMLS.Editor
     [Overlay(typeof(SceneView), "DrawModePlusMLS Controller")]
     public class SceneViewDebugOverlay : Overlay
     {
-        private static readonly int DepthMeter = Shader.PropertyToID("_DepthMeter");
         private static readonly int StencilComp = Shader.PropertyToID("_StencilComp");
 
         Slider _slider;
@@ -45,12 +44,10 @@ namespace DrawModePlusMLS.Editor
             title.style.unityFontStyleAndWeight = FontStyle.Bold;
             root.Add(title);
             _slider = new Slider("Depth Meter (10m~100m)", 10f, 100f);
-            _slider.value = 50f;
-            Shader.SetGlobalFloat(DepthMeter, _slider.value);
+            _slider.value = DrawModePlusRuntimeState.DepthMeter;
             _slider.RegisterValueChangedCallback(evt =>
             {
-                // Debug.Log("DepthMeter: " + evt.newValue);
-                Shader.SetGlobalFloat(DepthMeter, evt.newValue);
+                DrawModePlusRuntimeState.SetDepthMeter(evt.newValue);
                 SceneView.RepaintAll();
             });
             root.Add(_slider);

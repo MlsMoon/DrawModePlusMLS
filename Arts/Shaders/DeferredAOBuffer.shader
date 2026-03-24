@@ -1,10 +1,5 @@
-Shader "DrawModePlus/DeferredAOBuffer"
+Shader "DrawModePlus/DeferredDebugView"
 {
-    Properties
-    {
-        _MainTex ("Source", 2D) = "white" {}
-    }
-
     SubShader
     {
         Tags
@@ -17,53 +12,73 @@ Shader "DrawModePlus/DeferredAOBuffer"
         ZWrite Off
         ZTest Always
 
+        HLSLINCLUDE
+        #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+        #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
+        ENDHLSL
+
         Pass
         {
-            Name "DeferredAOBuffer"
+            Name "MaterialAOCapture"
 
             HLSLPROGRAM
             #pragma vertex Vert
-            #pragma fragment Frag
+            #pragma fragment FragCapture
 
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            TEXTURE2D_X_HALF(_GBuffer1);
+            SamplerState my_point_clamp_sampler;
 
-            struct Attributes
-            {
-                float4 positionOS : POSITION;
-                float2 uv : TEXCOORD0;
-            };
-
-            struct Varyings
-            {
-                float4 positionCS : SV_POSITION;
-                float2 uv : TEXCOORD0;
-                UNITY_VERTEX_OUTPUT_STEREO
-            };
-
-            TEXTURE2D_X(_ScreenSpaceOcclusionTexture);
-            SAMPLER(sampler_ScreenSpaceOcclusionTexture);
-
-            float _DrawModeIsForward;
-
-            Varyings Vert(Attributes input)
-            {
-                Varyings output = (Varyings)0;
-                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
-                output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
-                output.uv = input.uv;
-                return output;
-            }
-
-            half4 Frag(Varyings input) : SV_Target
+            half4 FragCapture(Varyings input) : SV_Target
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
-                if (_DrawModeIsForward > 0.5)
-                    return half4(1.0, 0.0, 1.0, 1.0);
-
-                float2 uv = UnityStereoTransformScreenSpaceTex(input.uv);
-                half ao = SAMPLE_TEXTURE2D_X(_ScreenSpaceOcclusionTexture, sampler_ScreenSpaceOcclusionTexture, uv).x;
+                float2 uv = input.texcoord;
+                half ao = SAMPLE_TEXTURE2D_X_LOD(_GBuffer1, my_point_clamp_sampler, uv, 0).a;
                 return half4(ao, ao, ao, 1.0);
+            }
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "BaseColorCapture"
+
+            HLSLPROGRAM
+            #pragma vertex Vert
+            #pragma fragment FragBaseColorCapture
+
+            TEXTURE2D_X_HALF(_GBuffer0);
+            SamplerState my_point_clamp_sampler;
+
+            half4 FragBaseColorCapture(Varyings input) : SV_Target
+            {
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
+
+                float2 uv = input.texcoord;
+                half3 baseColor = SAMPLE_TEXTURE2D_X_LOD(_GBuffer0, my_point_clamp_sampler, uv, 0).rgb;
+                return half4(baseColor, 1.0);
+            }
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "DeferredDebugComposite"
+
+            HLSLPROGRAM
+            #pragma vertex Vert
+            #pragma fragment FragComposite
+
+            TEXTURE2D_X(_DrawModePlusMaterialAODebugTexture);
+            SAMPLER(sampler_DrawModePlusMaterialAODebugTexture);
+
+            half4 FragComposite(Varyings input) : SV_Target
+            {
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
+
+                float2 uv = input.texcoord;
+                half3 debugColor = SAMPLE_TEXTURE2D_X(_DrawModePlusMaterialAODebugTexture, sampler_DrawModePlusMaterialAODebugTexture, uv).rgb;
+                return half4(debugColor, 1.0);
             }
             ENDHLSL
         }
