@@ -37,6 +37,10 @@ namespace DrawModePlusMLS.Editor
             drawModes.Add(baseColorDeferredDrawMode);
             DeferredAmbientOcclusionDrawMode deferredAmbientOcclusionDrawMode = new DeferredAmbientOcclusionDrawMode();
             drawModes.Add(deferredAmbientOcclusionDrawMode);
+            MetallicDeferredDrawMode metallicDeferredDrawMode = new MetallicDeferredDrawMode();
+            drawModes.Add(metallicDeferredDrawMode);
+            RoughnessDeferredDrawMode roughnessDeferredDrawMode = new RoughnessDeferredDrawMode();
+            drawModes.Add(roughnessDeferredDrawMode);
             UV0Checker uv0Checker = new UV0Checker();
             drawModes.Add(uv0Checker);
             StencilDrawMode stencilDrawMode = new StencilDrawMode();

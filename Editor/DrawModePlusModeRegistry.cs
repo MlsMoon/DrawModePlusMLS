@@ -23,6 +23,8 @@ namespace DrawModePlusMLS.Editor
             DrawModePlusMode.WorldNormalDeferred,
             DrawModePlusMode.BaseColorDeferred,
             DrawModePlusMode.MaterialAO,
+            DrawModePlusMode.MetallicDeferred,
+            DrawModePlusMode.RoughnessDeferred,
             DrawModePlusMode.UV0,
             DrawModePlusMode.Stencil
         };
@@ -35,6 +37,8 @@ namespace DrawModePlusMLS.Editor
             { DrawModePlusMode.WorldNormalDeferred, "WorldNormal(Deferred)" },
             { DrawModePlusMode.BaseColorDeferred, "BaseColor(Deferred)" },
             { DrawModePlusMode.MaterialAO, "MaterialAO" },
+            { DrawModePlusMode.MetallicDeferred, "Metallic(Deferred)" },
+            { DrawModePlusMode.RoughnessDeferred, "Roughness(Deferred)" },
             { DrawModePlusMode.UV0, "UV0" },
             { DrawModePlusMode.Stencil, "Stencil" }
         };

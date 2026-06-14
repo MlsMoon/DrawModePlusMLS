@@ -77,7 +77,7 @@ namespace DrawModePlusMLS
                 return;
             }
 
-            if (mode == DrawModePlusMode.MaterialAO || mode == DrawModePlusMode.BaseColorDeferred)
+            if (IsDeferredDebugMode(mode))
             {
                 if (!DrawModePlusRenderPipelineBridge.IsDeferred(renderingData.cameraData.camera))
                     return;
@@ -169,9 +169,21 @@ namespace DrawModePlusMLS
                     return 0;
                 case DrawModePlusMode.BaseColorDeferred:
                     return 1;
+                case DrawModePlusMode.MetallicDeferred:
+                    return 3;
+                case DrawModePlusMode.RoughnessDeferred:
+                    return 4;
                 default:
                     return 0;
             }
+        }
+
+        private static bool IsDeferredDebugMode(DrawModePlusMode mode)
+        {
+            return mode == DrawModePlusMode.MaterialAO
+                || mode == DrawModePlusMode.BaseColorDeferred
+                || mode == DrawModePlusMode.MetallicDeferred
+                || mode == DrawModePlusMode.RoughnessDeferred;
         }
 
         private Material GetUv0Material()
