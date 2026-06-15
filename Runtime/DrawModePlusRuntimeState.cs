@@ -12,8 +12,9 @@ namespace DrawModePlusMLS
         MaterialAO = 5,
         MetallicDeferred = 6,
         RoughnessDeferred = 7,
-        UV0 = 8,
-        Stencil = 9
+        TexelDensity = 8,
+        UV0 = 9,
+        Stencil = 10
     }
 
     public static class DrawModePlusRuntimeState

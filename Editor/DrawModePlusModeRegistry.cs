@@ -25,6 +25,7 @@ namespace DrawModePlusMLS.Editor
             DrawModePlusMode.MaterialAO,
             DrawModePlusMode.MetallicDeferred,
             DrawModePlusMode.RoughnessDeferred,
+            DrawModePlusMode.TexelDensity,
             DrawModePlusMode.UV0,
             DrawModePlusMode.Stencil
         };
@@ -39,6 +40,7 @@ namespace DrawModePlusMLS.Editor
             { DrawModePlusMode.MaterialAO, "MaterialAO" },
             { DrawModePlusMode.MetallicDeferred, "Metallic(Deferred)" },
             { DrawModePlusMode.RoughnessDeferred, "Roughness(Deferred)" },
+            { DrawModePlusMode.TexelDensity, "TexelDensity" },
             { DrawModePlusMode.UV0, "UV0" },
             { DrawModePlusMode.Stencil, "Stencil" }
         };

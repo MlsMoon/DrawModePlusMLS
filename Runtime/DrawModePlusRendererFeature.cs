@@ -21,6 +21,7 @@ namespace DrawModePlusMLS
 
         private FullscreenDebugPass fullscreenPass;
         private Uv0DebugPass uv0Pass;
+        private TexelDensityDebugPass texelDensityPass;
         private StencilDebugPass stencilPass;
         private MaterialAOCapturePass materialAOCapturePass;
         private MaterialAOCompositePass materialAOCompositePass;
@@ -30,6 +31,7 @@ namespace DrawModePlusMLS
         private Material deferredNormalMaterial;
         private Material deferredDebugMaterial;
         private Material uv0Material;
+        private Material flatGrayMaterial;
         private Material stencilWriteMaterial;
         private Material stencilViewMaterial;
 
@@ -48,6 +50,7 @@ namespace DrawModePlusMLS
 
             fullscreenPass = new FullscreenDebugPass(fullscreenPassEvent);
             uv0Pass = new Uv0DebugPass(sceneRedrawPassEvent);
+            texelDensityPass = new TexelDensityDebugPass(sceneRedrawPassEvent);
             stencilPass = new StencilDebugPass(sceneRedrawPassEvent);
             materialAOCapturePass = new MaterialAOCapturePass(RenderPassEvent.BeforeRenderingDeferredLights);
             materialAOCompositePass = new MaterialAOCompositePass(RenderPassEvent.AfterRenderingPostProcessing);
@@ -93,6 +96,17 @@ namespace DrawModePlusMLS
                 return;
             }
 
+            if (mode == DrawModePlusMode.TexelDensity)
+            {
+                var material = GetFlatGrayMaterial();
+                if (material == null)
+                    return;
+
+                texelDensityPass.Setup(material);
+                renderer.EnqueuePass(texelDensityPass);
+                return;
+            }
+
             if (mode == DrawModePlusMode.UV0)
             {
                 var material = GetUv0Material();
@@ -129,6 +143,7 @@ namespace DrawModePlusMLS
             DestroyMaterial(deferredNormalMaterial);
             DestroyMaterial(deferredDebugMaterial);
             DestroyMaterial(uv0Material);
+            DestroyMaterial(flatGrayMaterial);
             DestroyMaterial(stencilWriteMaterial);
             DestroyMaterial(stencilViewMaterial);
         }
@@ -195,6 +210,11 @@ namespace DrawModePlusMLS
             }
 
             return material;
+        }
+
+        private Material GetFlatGrayMaterial()
+        {
+            return GetOrCreateMaterial(ref flatGrayMaterial, "DrawModePlus/FlatGray");
         }
 
         private Material GetStencilWriteMaterial()
