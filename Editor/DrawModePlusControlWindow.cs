@@ -46,6 +46,32 @@ namespace DrawModePlusMLS.Editor
                     SceneView.RepaintAll();
                 }
             }
+
+            if (DrawModePlusRuntimeState.CurrentMode == DrawModePlusMode.Reflection)
+            {
+                EditorGUI.BeginChangeCheck();
+                bool forceMirror = EditorGUILayout.Toggle("Force Mirror", DrawModePlusRuntimeState.ForceMirror);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    DrawModePlusRuntimeState.SetForceMirror(forceMirror);
+                    SceneView.RepaintAll();
+                }
+
+                if (!DrawModePlusRuntimeState.ForceMirror)
+                {
+                    EditorGUI.BeginChangeCheck();
+                    float roughness = EditorGUILayout.Slider(
+                        "Global Roughness",
+                        DrawModePlusRuntimeState.ReflectionRoughness,
+                        0f,
+                        1f);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        DrawModePlusRuntimeState.SetReflectionRoughness(roughness);
+                        SceneView.RepaintAll();
+                    }
+                }
+            }
         }
     }
 }

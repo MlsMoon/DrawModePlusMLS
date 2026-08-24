@@ -14,6 +14,7 @@ namespace DrawModePlusMLS.Editor
         private static List<CustomDrawModeBase> drawModes = new List<CustomDrawModeBase>();
         private static readonly int DrawModeIsForwardId = Shader.PropertyToID("_DrawModeIsForward");
         private const string TexelDensityHintText = "Texel Density 512/m | <color=#7A0000><=128 x2 Low</color> | <color=#FF8A2A>256 x1 Low</color> | <color=#00FF00>512 OK</color> | <color=#00BFA5>1024 x1 High</color> | <color=#28106E>>=2048 x2 High</color> | <color=#9A9A9A>Gray non Common.shader</color>";
+        private const string ReflectionHintText = "Reflection | override chrome IBL | Rain Debug does not affect this view | black = Probe/Sky has no contribution";
 
         private static RenderPipelineAsset lastRenderPipelineAsset;
         static CustomDrawModeInitializer()
@@ -49,6 +50,8 @@ namespace DrawModePlusMLS.Editor
             drawModes.Add(uv0Checker);
             StencilDrawMode stencilDrawMode = new StencilDrawMode();
             drawModes.Add(stencilDrawMode);
+            ReflectionDrawMode reflectionDrawMode = new ReflectionDrawMode();
+            drawModes.Add(reflectionDrawMode);
 
             foreach (var drawMode in drawModes)
             {
@@ -107,7 +110,8 @@ namespace DrawModePlusMLS.Editor
 
         private static void OnSceneGUI(SceneView sceneView)
         {
-            if (DrawModePlusRuntimeState.CurrentMode != DrawModePlusMode.TexelDensity)
+            string hintText = GetOverlayHintText();
+            if (string.IsNullOrEmpty(hintText))
                 return;
 
             Handles.BeginGUI();
@@ -119,9 +123,23 @@ namespace DrawModePlusMLS.Editor
                 richText = true,
                 normal = { textColor = Color.white }
             };
-            GUI.Label(rect, TexelDensityHintText, style);
+            GUI.Label(rect, hintText, style);
             Handles.EndGUI();
         }
+
+        private static string GetOverlayHintText()
+        {
+            switch (DrawModePlusRuntimeState.CurrentMode)
+            {
+                case DrawModePlusMode.TexelDensity:
+                    return TexelDensityHintText;
+                case DrawModePlusMode.Reflection:
+                    return ReflectionHintText;
+                default:
+                    return null;
+            }
+        }
+
         private static void UpdateDrawModeIsForwardFlag()
         {
             var referenceCamera = GetReferenceCamera();

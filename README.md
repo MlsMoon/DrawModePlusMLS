@@ -30,6 +30,7 @@ GitHub: https://github.com/MlsMoon/DrawModePlusMLS
 | **TexelDensity** | Forward / Deferred | Re-renders scene objects to visualize texel density. Color legend: ≤128 red, 256 orange, 512 green, 1024 cyan, ≥2048 blue. Gray = non-Common.shader objects. **Requires project shader integration — see below.** |
 | **UV0** | Forward / Deferred | UV0 checker pattern overlay on all scene objects |
 | **Stencil** | Forward / Deferred | Stencil buffer debug: writes stencil values then visualizes them via post-process blit |
+| **Reflection** | Forward / Deferred | Non-invasive override redraw: clears the camera and redraws all objects with `DrawModePlus/ReflectionView`. Samples per-object Probe/Sky IBL from mesh normals. **Force Mirror** (default) is chrome; turning it off uses a global roughness, not the original material. Rain/Snow Debug and `DEBUG_DISPLAY` do not affect this view. Objects without UniversalForward / GBuffer tags are skipped, same as UV0. |
 
 ### How to Use
 
@@ -44,7 +45,19 @@ GitHub: https://github.com/MlsMoon/DrawModePlusMLS
 
 `Tools > DrawModePlus > DrawMode 显示控制面板`
 
-A dockable EditorWindow that lets you switch modes via dropdown, with a depth range slider when Depth mode is active.
+A dockable EditorWindow that lets you switch modes via dropdown, with a depth range slider when Depth mode is active, and Force Mirror / Global Roughness controls when Reflection mode is active.
+
+### Reflection Mode
+
+Reflection is a RenderFeature override, not URP Lighting Debug:
+
+- Clears the color target, then `DrawRenderers` with `DrawModePlus/ReflectionView`
+- Original materials, Rain Debug, and Snow Debug never write this view
+- **Force Mirror** (default): perceptual roughness = 0, chrome IBL for every object
+- Force Mirror off: one global roughness slider; still not the original material roughness
+- Uses mesh normals and per-object `unity_SpecCube0` / Box Projection
+- IGP SSR is not included; keep using Volume `Hit Mask` / `Reflection Only`
+- Objects without `UniversalForward` / `UniversalGBuffer` / `UniversalForwardOnly` / `SRPDefaultUnlit` are skipped, same as UV0
 
 ### Installation
 
@@ -121,6 +134,7 @@ The following shaders must be present in the project (included in `Arts/Shaders/
 | `DrawModePlus/FlatGray` | Fallback for non-integrated objects in TexelDensity |
 | `DrawModePlus/StencilWriter` | Stencil write pass |
 | `DrawModePlus/StencilChecker` | Stencil visualization pass |
+| `DrawModePlus/ReflectionView` | Override chrome/IBL reflection redraw |
 
 These are automatically referenced by name via `Shader.Find()`. Ensure they are in a `Resources` folder or always-included in project settings.
 
@@ -138,6 +152,7 @@ DrawModePlusMLS/
 │       ├── Uv0DebugPass.cs              — UV0 checker (override material)
 │       ├── TexelDensityDebugPass.cs     — Texel density (override material + DrawModePlusTexelDensity tag)
 │       ├── StencilDebugPass.cs          — Stencil write + view blit
+│       ├── ReflectionDebugPass.cs       — Reflection override redraw
 │       ├── MaterialAOCapturePass.cs     — Deferred GBuffer capture (procedural quad)
 │       └── MaterialAOCompositePass.cs   — Deferred debug composite
 ├── Editor/
@@ -158,7 +173,8 @@ DrawModePlusMLS/
 │       ├── RoughnessDeferredDrawMode.cs
 │       ├── TexelDensityDrawMode.cs
 │       ├── UV0Checker.cs
-│       └── StencilDrawMode.cs
+│       ├── StencilDrawMode.cs
+│       └── ReflectionDrawMode.cs
 ├── Arts/                                — Shaders, materials, textures, demo assets
 ├── Demo.unity                           — Demo scene
 └── Images/                              — GIF screenshots for docs
@@ -197,6 +213,7 @@ This means the plugin works immediately after import — no manual RendererFeatu
 | **TexelDensity** | Forward / Deferred | 重新绘制场景物体以可视化纹理密度。图例：≤128 红、256 橙、512 绿、1024 青、≥2048 蓝。灰色 = 未适配的 shader。**需要项目 shader 适配 — 见下方说明。** |
 | **UV0** | Forward / Deferred | UV0 棋盘格叠加显示 |
 | **Stencil** | Forward / Deferred | Stencil 缓冲调试：写入模板值后通过后处理可视化 |
+| **Reflection** | Forward / Deferred | 非侵入 override 重绘：清屏后用 `DrawModePlus/ReflectionView` 重画所有物体，按网格法线采样每个物体自己的 Probe/Sky。默认 **Force Mirror** 为 chrome；关闭后用全局 roughness，不是原材质粗糙度。Rain/Snow Debug 和 `DEBUG_DISPLAY` 不影响此视图。没有 UniversalForward / GBuffer 等 tag 的物体不会被画到，与 UV0 相同。 |
 
 ### 使用方式
 
@@ -211,7 +228,19 @@ This means the plugin works immediately after import — no manual RendererFeatu
 
 `Tools > DrawModePlus > DrawMode 显示控制面板`
 
-可停靠的 EditorWindow，通过下拉菜单切换模式。Depth 模式下提供深度范围滑块。
+可停靠的 EditorWindow，通过下拉菜单切换模式。Depth 模式下提供深度范围滑块；Reflection 模式下提供 Force Mirror / 全局 Roughness。
+
+### Reflection 模式说明
+
+Reflection 是 RenderFeature override，不再驱动 URP Lighting Debug：
+
+- 清掉颜色后再用 `DrawModePlus/ReflectionView` 做 `DrawRenderers`
+- 原材质、Rain Debug、Snow Debug 都不会写进这个视图
+- **Force Mirror**（默认）：perceptual roughness = 0，所有物体看同一套 chrome IBL
+- 关闭 Force Mirror：用全局 roughness 滑条，仍然不是原材质粗糙度
+- 使用网格法线和每个物体自己的 `unity_SpecCube0` / Box Projection
+- 不显示 IGP SSR；SSR 仍用 Volume 的 `Hit Mask` / `Reflection Only`
+- 没有 `UniversalForward` / `UniversalGBuffer` / `UniversalForwardOnly` / `SRPDefaultUnlit` 的物体不会被画到，与 UV0 相同
 
 ### 安装
 
@@ -287,6 +316,7 @@ Texel Density 512/m | <=128 Low | 256 Low | 512 OK | 1024 High | >=2048 High | G
 | `DrawModePlus/FlatGray` | TexelDensity 未适配物体回退 |
 | `DrawModePlus/StencilWriter` | Stencil 写入 |
 | `DrawModePlus/StencilChecker` | Stencil 可视化 |
+| `DrawModePlus/ReflectionView` | override chrome/IBL 反射重绘 |
 
 这些 shader 通过 `Shader.Find()` 按名称引用，确保它们在 Resources 文件夹中或已加入 always-included shaders。
 
@@ -304,6 +334,7 @@ DrawModePlusMLS/
 │       ├── Uv0DebugPass.cs               — UV0 棋盘格（材质覆盖）
 │       ├── TexelDensityDebugPass.cs      — 纹理密度（材质覆盖 + DrawModePlusTexelDensity 标签）
 │       ├── StencilDebugPass.cs           — Stencil 写入 + 查看 Blit
+│       ├── ReflectionDebugPass.cs        — Reflection override 重绘
 │       ├── MaterialAOCapturePass.cs      — Deferred GBuffer 捕获（程序化四边形）
 │       └── MaterialAOCompositePass.cs    — Deferred 调试合成
 ├── Editor/
@@ -324,7 +355,8 @@ DrawModePlusMLS/
 │       ├── RoughnessDeferredDrawMode.cs
 │       ├── TexelDensityDrawMode.cs
 │       ├── UV0Checker.cs
-│       └── StencilDrawMode.cs
+│       ├── StencilDrawMode.cs
+│       └── ReflectionDrawMode.cs
 ├── Arts/                                 — Shader、材质、贴图、Demo 资产
 ├── Demo.unity                            — Demo 场景
 └── Images/                               — 文档用 GIF 截图

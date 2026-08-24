@@ -27,7 +27,8 @@ namespace DrawModePlusMLS.Editor
             DrawModePlusMode.RoughnessDeferred,
             DrawModePlusMode.TexelDensity,
             DrawModePlusMode.UV0,
-            DrawModePlusMode.Stencil
+            DrawModePlusMode.Stencil,
+            DrawModePlusMode.Reflection
         };
 
         private static readonly Dictionary<DrawModePlusMode, string> DisplayNames = new Dictionary<DrawModePlusMode, string>
@@ -42,7 +43,8 @@ namespace DrawModePlusMLS.Editor
             { DrawModePlusMode.RoughnessDeferred, "Roughness(Deferred)" },
             { DrawModePlusMode.TexelDensity, "TexelDensity" },
             { DrawModePlusMode.UV0, "UV0" },
-            { DrawModePlusMode.Stencil, "Stencil" }
+            { DrawModePlusMode.Stencil, "Stencil" },
+            { DrawModePlusMode.Reflection, "Reflection" }
         };
 
         public static IReadOnlyList<DrawModePlusMode> Modes => OrderedModes;

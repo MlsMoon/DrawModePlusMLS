@@ -23,6 +23,7 @@ namespace DrawModePlusMLS
         private Uv0DebugPass uv0Pass;
         private TexelDensityDebugPass texelDensityPass;
         private StencilDebugPass stencilPass;
+        private ReflectionDebugPass reflectionPass;
         private MaterialAOCapturePass materialAOCapturePass;
         private MaterialAOCompositePass materialAOCompositePass;
 
@@ -34,6 +35,7 @@ namespace DrawModePlusMLS
         private Material flatGrayMaterial;
         private Material stencilWriteMaterial;
         private Material stencilViewMaterial;
+        private Material reflectionMaterial;
 
         public void SetEditorResources(Texture2D texture)
         {
@@ -52,6 +54,7 @@ namespace DrawModePlusMLS
             uv0Pass = new Uv0DebugPass(sceneRedrawPassEvent);
             texelDensityPass = new TexelDensityDebugPass(sceneRedrawPassEvent);
             stencilPass = new StencilDebugPass(sceneRedrawPassEvent);
+            reflectionPass = new ReflectionDebugPass(sceneRedrawPassEvent);
             materialAOCapturePass = new MaterialAOCapturePass(RenderPassEvent.BeforeRenderingDeferredLights);
             materialAOCompositePass = new MaterialAOCompositePass(RenderPassEvent.AfterRenderingPostProcessing);
 #endif
@@ -118,6 +121,17 @@ namespace DrawModePlusMLS
                 return;
             }
 
+            if (mode == DrawModePlusMode.Reflection)
+            {
+                var material = GetReflectionMaterial();
+                if (material == null)
+                    return;
+
+                reflectionPass.Setup(material);
+                renderer.EnqueuePass(reflectionPass);
+                return;
+            }
+
             if (mode == DrawModePlusMode.Stencil)
             {
                 var writeMaterial = GetStencilWriteMaterial();
@@ -146,6 +160,7 @@ namespace DrawModePlusMLS
             DestroyMaterial(flatGrayMaterial);
             DestroyMaterial(stencilWriteMaterial);
             DestroyMaterial(stencilViewMaterial);
+            DestroyMaterial(reflectionMaterial);
         }
 
         private bool ShouldRenderCamera(CameraType cameraType)
@@ -225,6 +240,11 @@ namespace DrawModePlusMLS
         private Material GetStencilViewMaterial()
         {
             return GetOrCreateMaterial(ref stencilViewMaterial, "DrawModePlus/StencilChecker");
+        }
+
+        private Material GetReflectionMaterial()
+        {
+            return GetOrCreateMaterial(ref reflectionMaterial, "DrawModePlus/ReflectionView");
         }
 
         private static Material GetOrCreateMaterial(ref Material material, string shaderName)
