@@ -24,7 +24,8 @@ Shader "DrawModePlus/ReflectionView"
             #pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/GlobalIllumination.hlsl"
+            // Lighting.hlsl 先带 BRDFData / DebuggingCommon，禁止单独 include GlobalIllumination.hlsl。
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
             float _DrawModePlusReflectionRoughness;
 
