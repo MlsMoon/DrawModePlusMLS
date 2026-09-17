@@ -1,7 +1,8 @@
-namespace DrawModePlusMLS.Editor
+﻿namespace DrawModePlusMLS.Editor
 {
     /// <summary>
-    /// SceneView Reflection 调试视图：驱动 URP Lighting Debug 隔离 Probe/IBL 反射。
+    /// SceneView Reflection debug view. Drives the RenderFeature override redraw,
+    /// not URP Lighting Debug.
     /// </summary>
     public class ReflectionDrawMode : CustomDrawModeBase
     {

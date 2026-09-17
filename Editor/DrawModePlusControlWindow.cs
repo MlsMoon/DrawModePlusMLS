@@ -1,4 +1,4 @@
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace DrawModePlusMLS.Editor
@@ -11,7 +11,7 @@ namespace DrawModePlusMLS.Editor
             "Author: minlesheng\n" +
             "Modified: 2026-03-24";
 
-        [MenuItem("Tools/DrawModePlus/DrawMode 显示控制面板", false, 181)]
+        [MenuItem("Tools/DrawModePlus/Draw Mode Control Panel", false, 181)]
         private static void OpenWindow()
         {
             var window = GetWindow<DrawModePlusControlWindow>(WindowTitle);

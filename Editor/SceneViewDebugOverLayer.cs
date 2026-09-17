@@ -38,7 +38,7 @@ namespace DrawModePlusMLS.Editor
             root.style.paddingBottom = 10;
             root.style.width = 260;
 
-            #region Depth设置
+            #region Depth settings
 
             var title = new Label("Depth Settings");
             title.style.unityFontStyleAndWeight = FontStyle.Bold;
@@ -54,7 +54,7 @@ namespace DrawModePlusMLS.Editor
 
             #endregion
 
-            #region Stencil设置
+            #region Stencil settings
             
             var spacer = new VisualElement();
             spacer.style.height = 8;
@@ -64,7 +64,7 @@ namespace DrawModePlusMLS.Editor
             stencilTitle.style.unityFontStyleAndWeight = FontStyle.Bold;
             root.Add(stencilTitle);
 
-            int _stencilCompare = 4; // 默认 Equal
+            int _stencilCompare = 4; // Default: Equal
             var stencilPopup = new PopupField<string>(
                 "Comparison",
                 StencilCompareNames.ToList(),
@@ -77,7 +77,7 @@ namespace DrawModePlusMLS.Editor
                 string currentName = evt.newValue;
                 int stencilValue = StencilCompareNames.IndexOf(currentName);
 
-                // 这里你就拿到了 0–8 的 int
+                // Compare function index in 0-8.
                 Debug.Log($"Stencil Compare = {stencilValue}");
                 Shader.SetGlobalInt(StencilComp, stencilValue);
                 SceneView.RepaintAll();

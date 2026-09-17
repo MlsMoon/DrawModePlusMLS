@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using DrawModePlusMLS;
 using UnityEditor;
 using UnityEngine;
@@ -29,7 +29,7 @@ namespace DrawModePlusMLS.Editor
             EditorApplication.update += OnUpdateEditor;
             SceneView.duringSceneGui += OnSceneGUI;
 
-            // 注册DrawMode
+            // Register SceneView draw modes.
             DepthDrawMode depthDrawMode = new DepthDrawMode();
             drawModes.Add(depthDrawMode);
             WorldNormalDrawMode worldNormalDrawMode = new WorldNormalDrawMode();

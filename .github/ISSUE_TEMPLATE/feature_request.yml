@@ -1,0 +1,24 @@
+name: Feature request
+description: Propose a new draw mode or editor workflow
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What can you not inspect in SceneView today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: Mode name, Forward/Deferred, and how it should draw.
+    validations:
+      required: true
+  - type: textarea
+    id: extras
+    attributes:
+      label: Extra context
+      description: Screenshots, host shader constraints, or related issues.

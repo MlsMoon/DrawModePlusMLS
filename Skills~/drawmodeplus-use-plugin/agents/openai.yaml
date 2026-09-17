@@ -1,0 +1,4 @@
+interface:
+  display_name: "DrawModePlus: Use the Plugin"
+  short_description: "Install DrawModePlusMLS, switch SceneView modes, integrate texel density, and troubleshoot."
+  default_prompt: "Read AGENTS.md and $drawmodeplus-use-plugin before changing host shaders or SceneView debug setup. Use the current contract in AGENTS.md if older docs disagree."

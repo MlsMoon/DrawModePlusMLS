@@ -1,0 +1,22 @@
+{
+  "name": "com.mlsmoon.drawmodeplus",
+  "displayName": "DrawModePlus MLS",
+  "version": "0.2.0",
+  "unity": "2022.3",
+  "description": "Extra SceneView debug draw modes for URP: depth, normals, GBuffer, texel density, UV0, stencil, and reflection.",
+  "documentationUrl": "https://github.com/MlsMoon/DrawModePlusMLS#readme",
+  "changelogUrl": "https://github.com/MlsMoon/DrawModePlusMLS/blob/main/CHANGELOG.md",
+  "licensesUrl": "https://github.com/MlsMoon/DrawModePlusMLS/blob/main/LICENSE",
+  "license": "MIT",
+  "keywords": [
+    "unity",
+    "urp",
+    "debug",
+    "drawmode",
+    "sceneview"
+  ],
+  "author": {
+    "name": "MlsMoon",
+    "url": "https://github.com/MlsMoon"
+  }
+}

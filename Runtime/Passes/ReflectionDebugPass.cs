@@ -1,11 +1,12 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
 namespace DrawModePlusMLS
 {
     /// <summary>
-    /// 清屏后用 override 材质重绘场景，隔离 Probe/IBL，不跑原材质。
+    /// Clears the camera, then redraws the scene with an override material so Probe/IBL
+    /// can be inspected without running the original materials.
     /// </summary>
     internal sealed class ReflectionDebugPass : SceneObjectDebugPass
     {

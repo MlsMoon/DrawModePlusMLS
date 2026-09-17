@@ -1,0 +1,4 @@
+interface:
+  display_name: "DrawModePlus: Develop the Plugin"
+  short_description: "Edit DrawModePlusMLS Runtime/Editor: passes, auto-inject, new modes, verification."
+  default_prompt: "Read AGENTS.md and $drawmodeplus-develop-plugin before editing plugin source. Verify signatures in this repo; do not revive URP Lighting Debug for Reflection."

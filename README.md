@@ -1,77 +1,95 @@
 # DrawModePlusMLS
 
-[English](#english) | [中文](#中文)
+English | [简体中文](Docs/README.zh-Hans.md)
 
-A Unity Editor plugin that extends SceneView with additional debug draw modes, helping artists and technical artists inspect depth, normals, UVs, material properties, and more — all within the SceneView camera dropdown.
+Extra SceneView debug draw modes for [Universal Render Pipeline](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@14.0/manual/index.html). Inspect depth, normals, UVs, GBuffer channels, texel density, stencil, and reflection probes from the SceneView camera dropdown.
 
-GitHub: https://github.com/MlsMoon/DrawModePlusMLS
+> The plugin is editor-only. It auto-injects a URP Renderer Feature, then redraws or blits debug views without changing gameplay materials.
 
----
+**Agents:** start at [`AGENTS.md`](AGENTS.md). Skills (Unity-ignored) live in [`Skills~/`](Skills~/README.md). Machine-readable index: [`llms.txt`](llms.txt). Do not invent APIs from older README copies — `AGENTS.md` is the current-contract override.
 
-## English
+## Requirements
 
-### Supported Unity Versions
+- Unity 2022.3+ (tested on 2022.3.62f3)
+- Universal Render Pipeline (URP) 14
+- **URP only** — Built-in and HDRP are not supported
+- Forward and Deferred rendering paths
 
-- Unity 2022.3.62f3 (tested)
-- **URP (Universal Render Pipeline) only** — Built-in and HDRP are not supported
-- Both **Forward** and **Deferred** rendering paths
+## Quick Start
 
-### Features
+1. Install the plugin (see [Installation](#installation)).
+2. Open a SceneView.
+3. Open the **Draw Mode** dropdown (top-left, usually `Shaded`).
+4. Scroll to the **DrawModePlusMLS** section and pick a mode.
 
-| Mode | Rendering Path | Description |
+Optional: `Tools > DrawModePlus > Draw Mode Control Panel` for a dockable switcher, Depth range slider, and Reflection Force Mirror / Global Roughness controls.
+
+On first editor load the plugin injects `DrawModePlusRendererFeature` into every URP Renderer Data asset. No manual Renderer Feature setup is required.
+
+## Installation
+
+### Copy into `Assets/`
+
+Copy the `DrawModePlusMLS` folder anywhere under your project's `Assets/` (for example `Assets/Plugins/DrawModePlusMLS`).
+
+### Unity Package Manager (Git)
+
+In Unity: **Window > Package Manager > + > Add package from git URL**
+
+```text
+https://github.com/MlsMoon/DrawModePlusMLS.git
+```
+
+Pin a commit or tag if you need a fixed revision:
+
+```text
+https://github.com/MlsMoon/DrawModePlusMLS.git#v0.2.0
+```
+
+The package id is `com.mlsmoon.drawmodeplus`. After import, wait for script compile, then open a SceneView.
+
+### After install
+
+1. Confirm the Console has `DrawModePlusMLS: Injected DrawModePlusRendererFeature into ...` (once per Renderer Data).
+2. Select a mode from the SceneView dropdown or the control panel.
+3. Optional: enable **Enable Game View** on the injected Renderer Feature if you also want Game cameras.
+
+## Features
+
+| Mode | Path | Description |
 |---|---|---|
-| **Depth** | Forward / Deferred | Fullscreen depth visualization with adjustable depth range slider (1–500m) |
-| **WorldNormal (Forward)** | Forward | World-space normal visualization via fullscreen pass |
-| **WorldNormal (Deferred)** | Deferred | Deferred GBuffer normal buffer visualization (supports normal maps) |
-| **BaseColor (Deferred)** | Deferred | Deferred GBuffer base color (albedo) visualization |
-| **MaterialAO** | Deferred | Material ambient occlusion pass from GBuffer |
-| **Metallic (Deferred)** | Deferred | Deferred GBuffer metallic channel visualization |
-| **Roughness (Deferred)** | Deferred | Deferred GBuffer roughness (smoothness) visualization |
-| **TexelDensity** | Forward / Deferred | Re-renders scene objects to visualize texel density. Color legend: ≤128 red, 256 orange, 512 green, 1024 cyan, ≥2048 blue. Gray = non-Common.shader objects. **Requires project shader integration — see below.** |
-| **UV0** | Forward / Deferred | UV0 checker pattern overlay on all scene objects |
-| **Stencil** | Forward / Deferred | Stencil buffer debug: writes stencil values then visualizes them via post-process blit |
-| **Reflection** | Forward / Deferred | Non-invasive override redraw: clears the camera and redraws all objects with `DrawModePlus/ReflectionView`. Samples per-object Probe/Sky IBL from mesh normals. **Force Mirror** (default) is chrome; turning it off uses a global roughness, not the original material. Rain/Snow Debug and `DEBUG_DISPLAY` do not affect this view. Objects without UniversalForward / GBuffer tags are skipped, same as UV0. |
+| **Depth** | Forward / Deferred | Fullscreen depth. Range slider 1–500 m. |
+| **WorldNormal (Forward)** | Forward | World-space normals via a fullscreen pass. |
+| **WorldNormal (Deferred)** | Deferred | GBuffer normals, including normal maps. |
+| **BaseColor (Deferred)** | Deferred | GBuffer albedo. |
+| **MaterialAO** | Deferred | GBuffer ambient occlusion. |
+| **Metallic (Deferred)** | Deferred | GBuffer metallic. |
+| **Roughness (Deferred)** | Deferred | GBuffer roughness (from smoothness). |
+| **TexelDensity** | Forward / Deferred | Re-draws objects that expose `DrawModePlusTexelDensity`. Color legend: ≤128 red, 256 orange, 512 green, 1024 cyan, ≥2048 blue. Gray = shaders without the pass. **Host shaders must opt in.** |
+| **UV0** | Forward / Deferred | UV0 checker overlay on scene objects. |
+| **Stencil** | Forward / Deferred | Writes stencil, then visualizes it with a blit. |
+| **Reflection** | Forward / Deferred | Clears the camera and redraws with `DrawModePlus/ReflectionView`. Samples per-object Probe/Sky from mesh normals. **Force Mirror** (default) is chrome. Turning it off uses one global roughness, not the original material. Objects without `UniversalForward` / `UniversalGBuffer` / `UniversalForwardOnly` / `SRPDefaultUnlit` are skipped, same as UV0. |
 
-### How to Use
+## Screenshots
 
-#### Method 1: SceneView Camera Dropdown
+| Depth | Depth range | World Normal | UV0 |
+|---|---|---|---|
+| ![Depth](Docs/images/DepthView.gif) | ![Depth slider](Docs/images/DepthViewSlider.gif) | ![World Normal](Docs/images/WorldNormal.gif) | ![UV0](Docs/images/UV0Checker.gif) |
 
-1. Open a SceneView
-2. Click the **Draw Mode** dropdown (top-left of SceneView, usually says "Shaded")
-3. Scroll down to the **DrawModePlusMLS** section
-4. Select the desired debug mode
+## Reflection Mode
 
-#### Method 2: Control Window
-
-`Tools > DrawModePlus > DrawMode 显示控制面板`
-
-A dockable EditorWindow that lets you switch modes via dropdown, with a depth range slider when Depth mode is active, and Force Mirror / Global Roughness controls when Reflection mode is active.
-
-### Reflection Mode
-
-Reflection is a RenderFeature override, not URP Lighting Debug:
+Reflection is a Renderer Feature override, not URP Lighting Debug:
 
 - Clears the color target, then `DrawRenderers` with `DrawModePlus/ReflectionView`
-- Original materials, Rain Debug, and Snow Debug never write this view
+- Original materials and other host debug views do not write this buffer
 - **Force Mirror** (default): perceptual roughness = 0, chrome IBL for every object
 - Force Mirror off: one global roughness slider; still not the original material roughness
 - Uses mesh normals and per-object `unity_SpecCube0` / Box Projection
-- IGP SSR is not included; keep using Volume `Hit Mask` / `Reflection Only`
-- Objects without `UniversalForward` / `UniversalGBuffer` / `UniversalForwardOnly` / `SRPDefaultUnlit` are skipped, same as UV0
+- Screen-space reflections from other features are not included. Use that feature's own debug view if you need SSR isolation
 
-### Installation
+## TexelDensity — host shader integration
 
-1. Copy the `DrawModePlusMLS` folder into your project's `Assets/Plugins/` (or any `Assets/` folder)
-2. The plugin auto-injects `DrawModePlusRendererFeature` into all URP RendererData assets on first load
-3. Switch to a SceneView and select a draw mode from the camera dropdown
-
-### TexelDensity — Project Shader Integration
-
-The TexelDensity mode requires **manual shader modifications** in your project. Without this, all your project objects will render as flat gray.
-
-#### Step 1: Add a LightMode Tag to your project's main shader
-
-In **each shader** that should participate in texel density visualization, add a pass with `LightMode = "DrawModePlusTexelDensity"`:
+Without a `LightMode = "DrawModePlusTexelDensity"` pass, objects render flat gray.
 
 ```hlsl
 Pass
@@ -83,19 +101,12 @@ Pass
     #pragma vertex Vert
     #pragma fragment Frag
 
-    // ... include your common HLSL headers ...
-
-    // The key: output texel density color in the fragment shader
     half4 Frag(Varyings input) : SV_Target
     {
-        // Calculate texel density
-        float2 uv = input.uv0;                      // or your mesh's primary UV
-        float2 texelSize = ...;                     // from your main texture's TexelSize
+        float2 uv = input.uv0;
         float2 ddxUV = ddx(uv);
         float2 ddyUV = ddy(uv);
-        float texelDensity = ...;                   // your texel density formula (e.g., texels per world-unit)
-
-        // Normalize to the 512 reference scale and output as color
+        float texelDensity = /* texels per world unit */;
         float normalizedDensity = texelDensity / 512.0;
         return half4(normalizedDensity, normalizedDensity, normalizedDensity, 1.0);
     }
@@ -103,270 +114,63 @@ Pass
 }
 ```
 
-**How it works**: The `TexelDensityDebugPass` calls `context.DrawRenderers()` with `ShaderTagId("DrawModePlusTexelDensity")`. Unity only renders objects whose shaders contain a pass with this LightMode tag. Objects without this tag fall back to the `FlatGray` shader.
+`TexelDensityDebugPass` draws with `ShaderTagId("DrawModePlusTexelDensity")`. Missing tags fall back to `DrawModePlus/FlatGray`.
 
-#### Step 2: Verify the result
+Legend (bottom of SceneView):
 
-Switch to TexelDensity mode in SceneView. A legend bar appears at the bottom:
-
-```
-Texel Density 512/m | <=128 Low | 256 Low | 512 OK | 1024 High | >=2048 High | Gray = non-Common.shader
+```text
+Texel Density 512/m | <=128 Low | 256 Low | 512 OK | 1024 High | >=2048 High | Gray = non-integrated shader
 ```
 
-- **Red (≤128)**: Texel density too low — texture appears blurry, needs higher-res texture or larger UV scale
-- **Orange (256)**: Below reference
-- **Green (512)**: Matches the reference density — good
-- **Cyan (1024)**: Above reference
-- **Blue (≥2048)**: Much higher than reference — texture memory waste
-- **Gray**: Non-Common.shader objects that haven't been integrated
+Full shader notes: `Skills~/drawmodeplus-use-plugin/references/texel-density.md`.
 
-### Shader Requirements
+## Shaders
 
-The following shaders must be present in the project (included in `Arts/Shaders/`):
+Shipped in `Arts/Shaders/` and resolved with `Shader.Find` by name. They do **not** have to live in a `Resources` folder; they must stay in the imported plugin so Unity can find them.
 
 | Shader | Purpose |
 |---|---|
-| `DrawModePlus/DepthView` | Depth visualization fullscreen pass |
-| `DrawModePlus/WorldNormal` | Forward normal visualization |
-| `DrawModePlus/DeferredNormalBuffer` | Deferred normal buffer read |
-| `DrawModePlus/DeferredDebugView` | Deferred GBuffer debug (BaseColor/Metallic/Roughness/AO) |
-| `DrawModePlus/UV0Checker` | UV0 checker pattern |
-| `DrawModePlus/FlatGray` | Fallback for non-integrated objects in TexelDensity |
-| `DrawModePlus/StencilWriter` | Stencil write pass |
-| `DrawModePlus/StencilChecker` | Stencil visualization pass |
-| `DrawModePlus/ReflectionView` | Override chrome/IBL reflection redraw |
+| `DrawModePlus/DepthView` | Depth fullscreen pass |
+| `DrawModePlus/WorldNormal` | Forward normals |
+| `DrawModePlus/DeferredNormalBuffer` | Deferred normal buffer |
+| `DrawModePlus/DeferredDebugView` | Deferred GBuffer (BaseColor / Metallic / Roughness / AO) |
+| `DrawModePlus/UV0Checker` | UV0 checker |
+| `DrawModePlus/FlatGray` | TexelDensity fallback |
+| `DrawModePlus/StencilWriter` | Stencil write |
+| `DrawModePlus/StencilChecker` | Stencil visualization |
+| `DrawModePlus/ReflectionView` | Override chrome / IBL redraw |
 
-These are automatically referenced by name via `Shader.Find()`. Ensure they are in a `Resources` folder or always-included in project settings.
+## Example
 
-### Architecture
+Open `Example/Demo.unity` after the Renderer Feature has been injected. Sample meshes, materials, and the NormalMap prefab live under `Example/` and `Arts/`. See `Example/README.md`.
 
-```
+## Layout
+
+```text
 DrawModePlusMLS/
-├── Runtime/
-│   ├── DrawModePlusRendererFeature.cs    — URP RendererFeature (auto-injected)
-│   ├── DrawModePlusRuntimeState.cs       — Global state + DrawModePlusMode enum
-│   ├── DrawModePlusRenderPipelineBridge.cs — URP pipeline reflection helpers
-│   └── Passes/
-│       ├── FullscreenDebugPass.cs        — Depth / Normal fullscreen blit
-│       ├── SceneObjectDebugPass.cs       — Base class: re-draw scene objects
-│       ├── Uv0DebugPass.cs              — UV0 checker (override material)
-│       ├── TexelDensityDebugPass.cs     — Texel density (override material + DrawModePlusTexelDensity tag)
-│       ├── StencilDebugPass.cs          — Stencil write + view blit
-│       ├── ReflectionDebugPass.cs       — Reflection override redraw
-│       ├── MaterialAOCapturePass.cs     — Deferred GBuffer capture (procedural quad)
-│       └── MaterialAOCompositePass.cs   — Deferred debug composite
-├── Editor/
-│   ├── CustomDrawModeInitializer.cs     — [InitializeOnLoad] entry point, auto-injects Feature
-│   ├── DrawModePlusModeRegistry.cs      — SceneView camera mode registration
-│   ├── DrawModePlusControlWindow.cs     — EditorWindow for mode switching
-│   ├── DrawModePlusRendererFeatureEditor.cs — Feature inspector GUI
-│   ├── ResourceFinder.cs                — Loads textures from package
-│   ├── SceneViewDebugOverLayer.cs       — Overlay for debug info
-│   └── DrawModes/
-│       ├── CustomDrawModeBase.cs        — Base class for draw modes
-│       ├── DepthDrawMode.cs
-│       ├── WorldNormalDrawMode.cs
-│       ├── DeferredNormalBufferDrawMode.cs
-│       ├── BaseColorDeferredDrawMode.cs
-│       ├── DeferredAmbientOcclusionDrawMode.cs
-│       ├── MetallicDeferredDrawMode.cs
-│       ├── RoughnessDeferredDrawMode.cs
-│       ├── TexelDensityDrawMode.cs
-│       ├── UV0Checker.cs
-│       ├── StencilDrawMode.cs
-│       └── ReflectionDrawMode.cs
-├── Arts/                                — Shaders, materials, textures, demo assets
-├── Demo.unity                           — Demo scene
-└── Images/                              — GIF screenshots for docs
+├── Runtime/                 URP Renderer Feature, state, debug passes
+├── Editor/                  SceneView modes, control panel, auto-inject
+├── Arts/                    Shaders, materials, textures
+├── Example/                 Demo scene and sample prefabs
+├── Docs/                    Translations and screenshot GIFs
+├── Skills~/                 Agent skills (Unity-ignored)
+├── AGENTS.md                Agent router and current contract
+└── README.md
 ```
 
-### Auto-Injection
+## Agent skills
 
-On editor load, `CustomDrawModeInitializer` automatically:
-1. Finds the active URP asset
-2. Checks all RendererData for existing `DrawModePlusRendererFeature`
-3. If missing, creates and injects a new Feature instance into the RendererData asset
+`Skills~/` (Unity-ignored `~` folder):
 
-This means the plugin works immediately after import — no manual RendererFeature configuration needed.
+- `drawmodeplus-use-plugin` — install, modes, texel-density integration, troubleshooting
+- `drawmodeplus-develop-plugin` — architecture, adding a mode, verification
 
----
+Copy a skill folder into the host `.agents/skills/` or `.cursor/skills/` if the agent only auto-loads those paths. In this repository, read `AGENTS.md` first.
 
-## 中文
+## Contributing
 
-### 支持的 Unity 版本
+See [`CONTRIBUTING.md`](CONTRIBUTING.md). Please read `AGENTS.md` before editing Runtime or Editor code.
 
-- 已测试 Unity 2022.3.62f3
-- **仅支持 URP（通用渲染管线）** — 不支持 Built-in 和 HDRP
-- 同时支持 **Forward** 和 **Deferred** 渲染路径
+## License
 
-### 功能列表
-
-| 模式 | 渲染路径 | 说明 |
-|---|---|---|
-| **Depth** | Forward / Deferred | 全屏深度可视化，可调节深度范围滑块（1–500m） |
-| **WorldNormal (Forward)** | Forward | 世界空间法线可视化（全屏后处理） |
-| **WorldNormal (Deferred)** | Deferred | 延迟渲染 GBuffer 法线可视化（支持法线贴图） |
-| **BaseColor (Deferred)** | Deferred | 延迟渲染 GBuffer 基础色（Albedo）可视化 |
-| **MaterialAO** | Deferred | 材质环境光遮蔽（GBuffer AO 通道） |
-| **Metallic (Deferred)** | Deferred | 延迟渲染金属度通道 |
-| **Roughness (Deferred)** | Deferred | 延迟渲染粗糙度（光滑度）通道 |
-| **TexelDensity** | Forward / Deferred | 重新绘制场景物体以可视化纹理密度。图例：≤128 红、256 橙、512 绿、1024 青、≥2048 蓝。灰色 = 未适配的 shader。**需要项目 shader 适配 — 见下方说明。** |
-| **UV0** | Forward / Deferred | UV0 棋盘格叠加显示 |
-| **Stencil** | Forward / Deferred | Stencil 缓冲调试：写入模板值后通过后处理可视化 |
-| **Reflection** | Forward / Deferred | 非侵入 override 重绘：清屏后用 `DrawModePlus/ReflectionView` 重画所有物体，按网格法线采样每个物体自己的 Probe/Sky。默认 **Force Mirror** 为 chrome；关闭后用全局 roughness，不是原材质粗糙度。Rain/Snow Debug 和 `DEBUG_DISPLAY` 不影响此视图。没有 UniversalForward / GBuffer 等 tag 的物体不会被画到，与 UV0 相同。 |
-
-### 使用方式
-
-#### 方式一：SceneView 相机下拉菜单
-
-1. 打开 SceneView
-2. 点击左上角 **Draw Mode** 下拉菜单（通常显示 "Shaded"）
-3. 滚动到 **DrawModePlusMLS** 分组
-4. 选择需要的调试模式
-
-#### 方式二：控制面板
-
-`Tools > DrawModePlus > DrawMode 显示控制面板`
-
-可停靠的 EditorWindow，通过下拉菜单切换模式。Depth 模式下提供深度范围滑块；Reflection 模式下提供 Force Mirror / 全局 Roughness。
-
-### Reflection 模式说明
-
-Reflection 是 RenderFeature override，不再驱动 URP Lighting Debug：
-
-- 清掉颜色后再用 `DrawModePlus/ReflectionView` 做 `DrawRenderers`
-- 原材质、Rain Debug、Snow Debug 都不会写进这个视图
-- **Force Mirror**（默认）：perceptual roughness = 0，所有物体看同一套 chrome IBL
-- 关闭 Force Mirror：用全局 roughness 滑条，仍然不是原材质粗糙度
-- 使用网格法线和每个物体自己的 `unity_SpecCube0` / Box Projection
-- 不显示 IGP SSR；SSR 仍用 Volume 的 `Hit Mask` / `Reflection Only`
-- 没有 `UniversalForward` / `UniversalGBuffer` / `UniversalForwardOnly` / `SRPDefaultUnlit` 的物体不会被画到，与 UV0 相同
-
-### 安装
-
-1. 将 `DrawModePlusMLS` 文件夹放入项目的 `Assets/Plugins/`（或任意 `Assets/` 目录）
-2. 插件首次加载时自动向所有 URP RendererData 注入 `DrawModePlusRendererFeature`
-3. 切换到 SceneView，从相机下拉菜单选择 draw mode 即可
-
-### TexelDensity — 项目 Shader 适配指南
-
-TexelDensity 模式需要**手动修改项目 shader**。未适配时，所有项目物体会渲染为灰色。
-
-#### 第一步：为项目主 Shader 添加 LightMode Tag
-
-在需要参与纹理密度检测的**每个 shader** 中添加一个 `LightMode = "DrawModePlusTexelDensity"` 的 Pass：
-
-```hlsl
-Pass
-{
-    Name "DrawModePlusTexelDensity"
-    Tags { "LightMode" = "DrawModePlusTexelDensity" }
-
-    HLSLPROGRAM
-    #pragma vertex Vert
-    #pragma fragment Frag
-
-    // ... 引入项目的公共 HLSL 头文件 ...
-
-    half4 Frag(Varyings input) : SV_Target
-    {
-        // 计算纹理密度
-        float2 uv = input.uv0;                      // 或用网格的主 UV
-        float2 texelSize = ...;                     // 从主纹理的 TexelSize 获取
-        float2 ddxUV = ddx(uv);
-        float2 ddyUV = ddy(uv);
-        float texelDensity = ...;                   // 项目自己的纹理密度公式（如每世界单位的 texel 数）
-
-        // 以 512 为基准归一化，输出为颜色
-        float normalizedDensity = texelDensity / 512.0;
-        return half4(normalizedDensity, normalizedDensity, normalizedDensity, 1.0);
-    }
-    ENDHLSL
-}
-```
-
-**原理**：`TexelDensityDebugPass` 调用 `context.DrawRenderers()` 时传入 `ShaderTagId("DrawModePlusTexelDensity")`。Unity 只会渲染包含此 LightMode 标签 Pass 的 shader 物体。没有此标签的物体将使用 `FlatGray` shader 回退渲染为灰色。
-
-#### 第二步：验证效果
-
-在 SceneView 中切换到 TexelDensity 模式，底部会出现图例条：
-
-```
-Texel Density 512/m | <=128 Low | 256 Low | 512 OK | 1024 High | >=2048 High | Gray = 未适配shader
-```
-
-- **红 (≤128)**：纹理密度过低，贴图模糊，需提高分辨率或增大 UV 缩放
-- **橙 (256)**：低于基准
-- **绿 (512)**：符合基准密度 — 良好
-- **青 (1024)**：高于基准
-- **蓝 (≥2048)**：远高于基准 — 纹理内存浪费
-- **灰**：未适配的 shader 物体
-
-### Shader 依赖
-
-以下 shader 必须存在于项目中（已包含在 `Arts/Shaders/` 中）：
-
-| Shader | 用途 |
-|---|---|
-| `DrawModePlus/DepthView` | 深度可视化全屏 Pass |
-| `DrawModePlus/WorldNormal` | Forward 法线可视化 |
-| `DrawModePlus/DeferredNormalBuffer` | Deferred 法线缓冲读取 |
-| `DrawModePlus/DeferredDebugView` | Deferred GBuffer 调试（BaseColor/Metallic/Roughness/AO） |
-| `DrawModePlus/UV0Checker` | UV0 棋盘格 |
-| `DrawModePlus/FlatGray` | TexelDensity 未适配物体回退 |
-| `DrawModePlus/StencilWriter` | Stencil 写入 |
-| `DrawModePlus/StencilChecker` | Stencil 可视化 |
-| `DrawModePlus/ReflectionView` | override chrome/IBL 反射重绘 |
-
-这些 shader 通过 `Shader.Find()` 按名称引用，确保它们在 Resources 文件夹中或已加入 always-included shaders。
-
-### 架构
-
-```
-DrawModePlusMLS/
-├── Runtime/
-│   ├── DrawModePlusRendererFeature.cs     — URP RendererFeature（自动注入）
-│   ├── DrawModePlusRuntimeState.cs        — 全局状态 + DrawModePlusMode 枚举
-│   ├── DrawModePlusRenderPipelineBridge.cs — URP 管线反射工具
-│   └── Passes/
-│       ├── FullscreenDebugPass.cs         — Depth / Normal 全屏 Blit
-│       ├── SceneObjectDebugPass.cs        — 基类：重新绘制场景物体
-│       ├── Uv0DebugPass.cs               — UV0 棋盘格（材质覆盖）
-│       ├── TexelDensityDebugPass.cs      — 纹理密度（材质覆盖 + DrawModePlusTexelDensity 标签）
-│       ├── StencilDebugPass.cs           — Stencil 写入 + 查看 Blit
-│       ├── ReflectionDebugPass.cs        — Reflection override 重绘
-│       ├── MaterialAOCapturePass.cs      — Deferred GBuffer 捕获（程序化四边形）
-│       └── MaterialAOCompositePass.cs    — Deferred 调试合成
-├── Editor/
-│   ├── CustomDrawModeInitializer.cs      — [InitializeOnLoad] 入口，自动注入 Feature
-│   ├── DrawModePlusModeRegistry.cs       — SceneView 相机模式注册
-│   ├── DrawModePlusControlWindow.cs      — 模式切换 EditorWindow
-│   ├── DrawModePlusRendererFeatureEditor.cs — Feature Inspector GUI
-│   ├── ResourceFinder.cs                 — 资源加载
-│   ├── SceneViewDebugOverLayer.cs        — 调试信息 Overlay
-│   └── DrawModes/
-│       ├── CustomDrawModeBase.cs         — DrawMode 基类
-│       ├── DepthDrawMode.cs
-│       ├── WorldNormalDrawMode.cs
-│       ├── DeferredNormalBufferDrawMode.cs
-│       ├── BaseColorDeferredDrawMode.cs
-│       ├── DeferredAmbientOcclusionDrawMode.cs
-│       ├── MetallicDeferredDrawMode.cs
-│       ├── RoughnessDeferredDrawMode.cs
-│       ├── TexelDensityDrawMode.cs
-│       ├── UV0Checker.cs
-│       ├── StencilDrawMode.cs
-│       └── ReflectionDrawMode.cs
-├── Arts/                                 — Shader、材质、贴图、Demo 资产
-├── Demo.unity                            — Demo 场景
-└── Images/                               — 文档用 GIF 截图
-```
-
-### 自动注入
-
-编辑器启动时，`CustomDrawModeInitializer` 自动：
-1. 找到当前 URP 管线资产
-2. 检查所有 RendererData 是否已包含 `DrawModePlusRendererFeature`
-3. 如缺失，自动创建并注入 Feature 实例到 RendererData
-
-这意味着导入插件后即可使用，无需手动配置 RendererFeature。
+MIT — see [`LICENSE`](LICENSE). Third-party sample assets are listed in [`THIRD_PARTY.md`](THIRD_PARTY.md).

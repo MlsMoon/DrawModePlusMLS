@@ -1,0 +1,57 @@
+name: Bug report
+description: A draw mode is wrong, blank, or fails to compile
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Search existing issues first. Include Unity and URP versions.
+  - type: input
+    id: unity
+    attributes:
+      label: Unity version
+      placeholder: "2022.3.62f3"
+    validations:
+      required: true
+  - type: input
+    id: urp
+    attributes:
+      label: URP version
+      placeholder: "14.0.x"
+    validations:
+      required: true
+  - type: dropdown
+    id: path
+    attributes:
+      label: Rendering path
+      options:
+        - Forward
+        - Deferred
+        - Both / unsure
+    validations:
+      required: true
+  - type: input
+    id: mode
+    attributes:
+      label: Draw mode
+      placeholder: "Reflection, TexelDensity, ..."
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual
+    validations:
+      required: true
