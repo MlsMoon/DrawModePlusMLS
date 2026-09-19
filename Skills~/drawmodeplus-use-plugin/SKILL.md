@@ -76,6 +76,7 @@ Objects without `SRPDefaultUnlit` / `UniversalForward` / `UniversalForwardOnly` 
 ## 4. TexelDensity host pass
 
 Complete sample: `references/texel-density.md`.
+Fictional host wiring: `references/host-integration-xx.md`.
 
 - Add a pass tagged `LightMode = "DrawModePlusTexelDensity"`.
 - Output a grayscale value normalized to 512 texels/m (or your project reference).
@@ -115,4 +116,5 @@ Disable the Feature or set mode `None` to restore Shaded. No leftover blit shoul
 
 - `references/mode-catalog.md`
 - `references/texel-density.md`
+- `references/host-integration-xx.md`
 - Sibling develop skill for inject/pass contracts

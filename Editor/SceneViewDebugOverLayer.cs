@@ -29,8 +29,6 @@ namespace DrawModePlusMLS.Editor
 
         public override VisualElement CreatePanelContent()
         {
-            Debug.Log("DrawModePlusMLS: CreateOverlayPanelContent");
-
             var root = new VisualElement();
             root.style.paddingLeft = 10;
             root.style.paddingRight = 10;
@@ -77,8 +75,6 @@ namespace DrawModePlusMLS.Editor
                 string currentName = evt.newValue;
                 int stencilValue = StencilCompareNames.IndexOf(currentName);
 
-                // Compare function index in 0-8.
-                Debug.Log($"Stencil Compare = {stencilValue}");
                 Shader.SetGlobalInt(StencilComp, stencilValue);
                 SceneView.RepaintAll();
             });

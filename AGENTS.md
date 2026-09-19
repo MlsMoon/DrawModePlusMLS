@@ -12,7 +12,10 @@ Read a skill before writing code. Do not invent APIs from memory or from older R
 | Human overview | [`README.md`](README.md) |
 
 Skills live in `Skills~/` so Unity ignores them when this folder sits under `Assets/`.
-Copy a skill folder into the host project's `.agents/skills/` or `.cursor/skills/` if the agent only auto-loads those paths.
+Host projects installed by Moon Game Dev Tool Manager get a thin routing skill
+`draw-mode-plus-mls-skill` (from `.mlsmoon/skill.json`). It only chooses a skill
+below. Put durable contracts and xx host cases in `Skills~/`, not in the router.
+Do not copy `Skills~/` into the host `.agents/skills` as standalone skills.
 
 ## Hard rules
 
@@ -20,8 +23,8 @@ Copy a skill folder into the host project's `.agents/skills/` or `.cursor/skills
 - Editor debug views only. Do not make the Renderer Feature required in Player builds.
 - Do not add Unity Test scripts, test asmdefs, or Test Runner scaffolding.
 - Verify signatures in this repo before calling them. Cross-session memory is untrusted.
-- Agent-facing text in this repository is English: `AGENTS.md`, `Skills~/`, XML comments,
-  README, and git commit subjects/bodies.
+- Agent-facing text in this repository is English: `AGENTS.md`, `Skills~/`,
+  `.mlsmoon/` routing skill, XML comments, README, and git commit subjects/bodies.
 - Translations belong in `Docs/` (`README.zh-Hans.md`, future locales). Do not put
   non-English prose back into the root README or skills.
 - Documentation screenshots live in `Docs/images/`. Sample scenes live in `Example/`.

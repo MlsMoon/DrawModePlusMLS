@@ -68,7 +68,7 @@ SceneView camera mode / control panel
 4. **Stale Reflection comments.** Older notes said Lighting Debug. The pass is
    `ReflectionDebugPass` + `DrawModePlus/ReflectionView`.
 5. **TexelDensity gray.** Host shaders must add the LightMode. Do not special-case
-   a host project's Common.shader inside this repo.
+   a host project's shader inside this repo.
 
 ## Adding a mode
 

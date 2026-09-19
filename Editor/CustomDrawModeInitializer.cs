@@ -13,14 +13,12 @@ namespace DrawModePlusMLS.Editor
         private static SceneView currentSceneView;
         private static List<CustomDrawModeBase> drawModes = new List<CustomDrawModeBase>();
         private static readonly int DrawModeIsForwardId = Shader.PropertyToID("_DrawModeIsForward");
-        private const string TexelDensityHintText = "Texel Density 512/m | <color=#7A0000><=128 x2 Low</color> | <color=#FF8A2A>256 x1 Low</color> | <color=#00FF00>512 OK</color> | <color=#00BFA5>1024 x1 High</color> | <color=#28106E>>=2048 x2 High</color> | <color=#9A9A9A>Gray non Common.shader</color>";
+        private const string TexelDensityHintText = "Texel Density 512/m | <color=#7A0000><=128 x2 Low</color> | <color=#FF8A2A>256 x1 Low</color> | <color=#00FF00>512 OK</color> | <color=#00BFA5>1024 x1 High</color> | <color=#28106E>>=2048 x2 High</color> | <color=#9A9A9A>Gray = not integrated</color>";
         private const string ReflectionHintText = "Reflection | override chrome IBL | Rain Debug does not affect this view | black = Probe/Sky has no contribution";
 
         private static RenderPipelineAsset lastRenderPipelineAsset;
         static CustomDrawModeInitializer()
         {
-            Debug.Log("DrawModePlusMLS: Initialize");
-
             UpdateDrawModeIsForwardFlag();
             EnsureRendererFeaturesInjected();
             lastRenderPipelineAsset = GraphicsSettings.currentRenderPipeline;

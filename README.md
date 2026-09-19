@@ -154,6 +154,7 @@ DrawModePlusMLS/
 ├── Example/                 Demo scene and sample prefabs
 ├── Docs/                    Translations and screenshot GIFs
 ├── Skills~/                 Agent skills (Unity-ignored)
+├── .mlsmoon/                Routing skill for Moon Game Dev Tool Manager
 ├── AGENTS.md                Agent router and current contract
 └── README.md
 ```
@@ -165,7 +166,9 @@ DrawModePlusMLS/
 - `drawmodeplus-use-plugin` — install, modes, texel-density integration, troubleshooting
 - `drawmodeplus-develop-plugin` — architecture, adding a mode, verification
 
-Copy a skill folder into the host `.agents/skills/` or `.cursor/skills/` if the agent only auto-loads those paths. In this repository, read `AGENTS.md` first.
+Moon Game Dev Tool Manager installs a thin routing skill `draw-mode-plus-mls-skill`
+from `.mlsmoon/`. Edit `Skills~/`, not the router. Do not copy `Skills~/` into the
+host `.agents/skills` as standalone skills. In this repository, read `AGENTS.md` first.
 
 ## Contributing
 

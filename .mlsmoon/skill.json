@@ -1,0 +1,16 @@
+{
+  "id": "draw-mode-plus-mls-skill",
+  "kind": "routing",
+  "name": "draw-mode-plus-mls-skill",
+  "parentId": "draw-mode-plus-mls",
+  "routes": [
+    {
+      "title": "Use the plugin",
+      "path": "Skills~/drawmodeplus-use-plugin/SKILL.md"
+    },
+    {
+      "title": "Develop the plugin",
+      "path": "Skills~/drawmodeplus-develop-plugin/SKILL.md"
+    }
+  ]
+}

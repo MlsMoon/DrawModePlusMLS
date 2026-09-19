@@ -154,6 +154,7 @@ DrawModePlusMLS/
 ├── Example/                 示例场景和 Prefab
 ├── Docs/                    翻译和截图 GIF
 ├── Skills~/                 Agent 技能（Unity 会忽略）
+├── .mlsmoon/                给 Moon Game Dev Tool Manager 的路由 Skill
 ├── AGENTS.md                Agent 路由和当前合同
 └── README.md
 ```
@@ -165,7 +166,7 @@ DrawModePlusMLS/
 - `drawmodeplus-use-plugin` — 安装、模式、纹理密度适配、排错
 - `drawmodeplus-develop-plugin` — 架构、新增模式、验证
 
-如果宿主 Agent 只自动加载 `.agents/skills/` 或 `.cursor/skills/`，把对应技能文件夹拷过去。在本仓库请先读 `AGENTS.md`。
+Moon Game Dev Tool Manager 会从 `.mlsmoon/` 安装薄路由 Skill `draw-mode-plus-mls-skill`。改 `Skills~/`，不要改路由稿。不要把 `Skills~/` 当独立 Skill 拷进宿主 `.agents/skills`。在本仓库请先读 `AGENTS.md`。
 
 ## 参与贡献
 

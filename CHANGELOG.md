@@ -4,6 +4,23 @@ All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Moon Game Dev Tool Manager routing skill in `.mlsmoon/` (`draw-mode-plus-mls-skill`).
+- Fictional host texel-density wiring: `Skills~/drawmodeplus-use-plugin/references/host-integration-xx.md`.
+
+### Changed
+
+- Skills and `AGENTS.md` tell agents not to copy `Skills~/` into the host `.agents/skills`.
+- Control panel help text no longer includes author or a modified date.
+- SceneView texel-density legend says gray is "not integrated".
+
+### Removed
+
+- Noisy editor logs on overlay create, stencil compare, and `[InitializeOnLoad]`.
+
 ## [0.2.0] - 2026-09-17
 
 ### Added

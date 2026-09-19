@@ -7,6 +7,7 @@ This folder is a Unity editor plugin. When it lives under Assets/, Unity ignores
 ## Start here
 
 - [AGENTS.md](AGENTS.md): router, hard rules, current contract
+- [Host router](.mlsmoon/project-skill/draw-mode-plus-mls-skill/SKILL.md): pick a source skill; do not store host facts
 - [Use the plugin](Skills~/drawmodeplus-use-plugin/SKILL.md): install, modes, texel density, troubleshooting
 - [Develop the plugin](Skills~/drawmodeplus-develop-plugin/SKILL.md): architecture, adding a mode, verification
 - [README.md](README.md): human overview and installation
@@ -15,6 +16,7 @@ This folder is a Unity editor plugin. When it lives under Assets/, Unity ignores
 
 - [Mode catalog](Skills~/drawmodeplus-use-plugin/references/mode-catalog.md)
 - [Texel density host pass](Skills~/drawmodeplus-use-plugin/references/texel-density.md)
+- [Host texel-density wiring (xx)](Skills~/drawmodeplus-use-plugin/references/host-integration-xx.md)
 - [Architecture](Skills~/drawmodeplus-develop-plugin/references/architecture.md)
 - [Adding a mode](Skills~/drawmodeplus-develop-plugin/references/adding-a-mode.md)
 

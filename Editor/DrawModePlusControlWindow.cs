@@ -7,9 +7,7 @@ namespace DrawModePlusMLS.Editor
     {
         private const string WindowTitle = "DrawModeDisplayControl";
         private const string HelperText =
-            "Use this panel to switch DrawModePlus debug display modes for SceneView and GameView.\n" +
-            "Author: minlesheng\n" +
-            "Modified: 2026-03-24";
+            "Use this panel to switch DrawModePlus debug display modes for SceneView and GameView.";
 
         [MenuItem("Tools/DrawModePlus/Draw Mode Control Panel", false, 181)]
         private static void OpenWindow()
