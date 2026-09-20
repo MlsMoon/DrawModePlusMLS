@@ -8,6 +8,15 @@
 
 **给 Agent：** 先读仓库根目录 [`AGENTS.md`](../AGENTS.md)。技能在 [`Skills~/`](../Skills~/README.md)（Unity 会忽略 `~` 目录）。机器可读索引：[`llms.txt`](../llms.txt)。不要按旧 README 猜测 API，以 `AGENTS.md` 的当前合同为准。
 
+## 源仓库
+
+这是一个独立 Git 仓库。游戏工程用 Plastic SCM 拉下来后，这个目录通常没有 `.git`。
+
+- Git：https://github.com/MlsMoon/DrawModePlusMLS
+- 安装 / 更新：[Moon Game Dev Tool Manager](https://github.com/MlsMoon/moon-game-dev-tool-manager)（catalog id `draw-mode-plus-mls`）
+
+改插件请在上面的 Git 仓库提交并 Push，不要只在某个游戏工程里改完当正式发布。
+
 ## 环境要求
 
 - Unity 2022.3+（已在 2022.3.62f3 验证）

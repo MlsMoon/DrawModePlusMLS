@@ -8,6 +8,15 @@ Extra SceneView debug draw modes for [Universal Render Pipeline](https://docs.un
 
 **Agents:** start at [`AGENTS.md`](AGENTS.md). Skills (Unity-ignored) live in [`Skills~/`](Skills~/README.md). Machine-readable index: [`llms.txt`](llms.txt). Do not invent APIs from older README copies — `AGENTS.md` is the current-contract override.
 
+## Source repository
+
+This plugin is its own Git repository. A Plastic SCM pull of a game project usually copies the files and **drops `.git`**.
+
+- Git: https://github.com/MlsMoon/DrawModePlusMLS
+- Install / update: [Moon Game Dev Tool Manager](https://github.com/MlsMoon/moon-game-dev-tool-manager) (catalog id `draw-mode-plus-mls`)
+
+Commit and push plugin changes in that Git repo. Do not treat a copy inside one Unity workspace as the place to publish.
+
 ## Requirements
 
 - Unity 2022.3+ (tested on 2022.3.62f3)
